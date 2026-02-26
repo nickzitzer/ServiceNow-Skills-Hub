@@ -1,0 +1,40 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Claude Code
+.claude/
+
+# BMAD Framework (if not needed in repo)
+_bmad/
+_bmad-output/
+
+# Project-specific files (exclude from generic template)
+docs/CLEVELANDAI_FEATURES_AND_ROADMAP.md
+
+# Large binary files (force-add if needed: git add -f file.xml)
+*.pdf
+*.xml
+
+# Legacy folders from source project
+assets/
+mockup/
+
+# Project-specific scripts (from ClevelandAI source)
+scripts/[0-9][0-9]_*.js
+scripts/DEPLOYMENT_INSTRUCTIONS.md
+
+# IDE (except .vscode which has snippets)
+.idea/
+*.swp
+*.swo
+
+# Node (if any)
+node_modules/
+package-lock.json
+
+# Logs
+*.log
+
+# Keep empty folders
+!.gitkeep

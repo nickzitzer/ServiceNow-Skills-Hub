@@ -1,0 +1,555 @@
+{
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SESSION SETUP
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  "SN: Session Setup": {
+    "prefix": ["sn-setup", "snsetup"],
+    "body": [
+      "// Set application scope",
+      "SN-Set-Current-Application({ app_sys_id: \"${1:app_sys_id}\" })",
+      "",
+      "// Set update set",
+      "SN-Set-Update-Set({ update_set_sys_id: \"${2:update_set_sys_id}\" })",
+      "",
+      "// Verify context",
+      "SN-Get-Current-Update-Set()"
+    ],
+    "description": "ServiceNow session setup - always start here"
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // DISCOVERY COMMANDS
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  "SN: Query Table": {
+    "prefix": ["sn-query", "snquery"],
+    "body": [
+      "SN-Query-Table({",
+      "  table_name: \"${1:table_name}\",",
+      "  query: \"${2:active=true}\",",
+      "  fields: \"${3:sys_id,name}\"",
+      "})"
+    ],
+    "description": "Query ServiceNow table"
+  },
+
+  "SN: Discover Schema": {
+    "prefix": ["sn-schema", "snschema"],
+    "body": [
+      "SN-Discover-Table-Schema({",
+      "  table_name: \"${1:table_name}\",",
+      "  include_relationships: true,",
+      "  include_choices: true",
+      "})"
+    ],
+    "description": "Discover full table schema"
+  },
+
+  "SN: Get Record": {
+    "prefix": ["sn-get", "snget"],
+    "body": [
+      "SN-Get-Record({",
+      "  table_name: \"${1:table_name}\",",
+      "  sys_id: \"${2:sys_id}\"",
+      "})"
+    ],
+    "description": "Get single record by sys_id"
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // CREATE COMMANDS
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  "SN: Create Record": {
+    "prefix": ["sn-create", "sncreate"],
+    "body": [
+      "SN-Create-Record({",
+      "  table_name: \"${1:table_name}\",",
+      "  data: {",
+      "    ${2:field}: \"${3:value}\"",
+      "  }",
+      "})"
+    ],
+    "description": "Create a new record"
+  },
+
+  "SN: Create Table": {
+    "prefix": ["sn-create-table", "sntable"],
+    "body": [
+      "SN-Create-Record({",
+      "  table_name: \"sys_db_object\",",
+      "  data: {",
+      "    name: \"u_${1:table_name}\",",
+      "    label: \"${2:Table Label}\",",
+      "    super_class: \"${3|task,cmdb_ci,|}\"",
+      "    is_extendable: true,",
+      "    create_module: true",
+      "  }",
+      "})"
+    ],
+    "description": "Create a new ServiceNow table"
+  },
+
+  "SN: Create Field - String": {
+    "prefix": ["sn-field-string", "snfieldstr"],
+    "body": [
+      "SN-Create-Record({",
+      "  table_name: \"sys_dictionary\",",
+      "  data: {",
+      "    name: \"${1:table_name}\",",
+      "    element: \"u_${2:field_name}\",",
+      "    column_label: \"${3:Field Label}\",",
+      "    internal_type: \"string\",",
+      "    max_length: ${4:255},",
+      "    mandatory: ${5|false,true|},",
+      "    active: true",
+      "  }",
+      "})"
+    ],
+    "description": "Create a string field"
+  },
+
+  "SN: Create Field - Reference": {
+    "prefix": ["sn-field-ref", "snfieldref"],
+    "body": [
+      "SN-Create-Record({",
+      "  table_name: \"sys_dictionary\",",
+      "  data: {",
+      "    name: \"${1:table_name}\",",
+      "    element: \"u_${2:field_name}\",",
+      "    column_label: \"${3:Field Label}\",",
+      "    internal_type: \"reference\",",
+      "    reference: \"${4:target_table}\",",
+      "    mandatory: ${5|false,true|},",
+      "    active: true",
+      "  }",
+      "})"
+    ],
+    "description": "Create a reference field"
+  },
+
+  "SN: Create Field - Boolean": {
+    "prefix": ["sn-field-bool", "snfieldbool"],
+    "body": [
+      "SN-Create-Record({",
+      "  table_name: \"sys_dictionary\",",
+      "  data: {",
+      "    name: \"${1:table_name}\",",
+      "    element: \"u_${2:field_name}\",",
+      "    column_label: \"${3:Field Label}\",",
+      "    internal_type: \"boolean\",",
+      "    default_value: \"${4|true,false|}\",",
+      "    active: true",
+      "  }",
+      "})"
+    ],
+    "description": "Create a boolean field"
+  },
+
+  "SN: Create Choice": {
+    "prefix": ["sn-choice", "snchoice"],
+    "body": [
+      "SN-Create-Record({",
+      "  table_name: \"sys_choice\",",
+      "  data: {",
+      "    name: \"${1:table_name}\",",
+      "    element: \"${2:field_name}\",",
+      "    value: \"${3:value}\",",
+      "    label: \"${4:Label}\",",
+      "    sequence: ${5:100}",
+      "  }",
+      "})"
+    ],
+    "description": "Create a choice value"
+  },
+
+  "SN: Create Script Include": {
+    "prefix": ["sn-script-include", "snsi"],
+    "body": [
+      "SN-Create-Record({",
+      "  table_name: \"sys_script_include\",",
+      "  data: {",
+      "    name: \"${1:ScriptName}\",",
+      "    api_name: \"global.${1:ScriptName}\",",
+      "    client_callable: ${2|false,true|},",
+      "    active: true,",
+      "    description: \"${3:Description}\",",
+      "    script: `var ${1:ScriptName} = Class.create();",
+      "${1:ScriptName}.prototype = {",
+      "    initialize: function() {",
+      "        this.LOG_SOURCE = '${1:ScriptName}';",
+      "    },",
+      "",
+      "    ${4:methodName}: function(${5:param}) {",
+      "        try {",
+      "            // Implementation",
+      "            return { success: true, data: null };",
+      "        } catch (e) {",
+      "            gs.error(this.LOG_SOURCE + '.${4:methodName}: ' + e.message);",
+      "            return { success: false, error: e.message };",
+      "        }",
+      "    },",
+      "",
+      "    type: '${1:ScriptName}'",
+      "};`",
+      "  }",
+      "})"
+    ],
+    "description": "Create a Script Include"
+  },
+
+  "SN: Create Business Rule": {
+    "prefix": ["sn-business-rule", "snbr"],
+    "body": [
+      "SN-Create-Record({",
+      "  table_name: \"sys_script\",",
+      "  data: {",
+      "    name: \"${1:Rule Name}\",",
+      "    collection: \"${2:table_name}\",",
+      "    when: \"${3|after,before,async|}\",",
+      "    action_insert: ${4|true,false|},",
+      "    action_update: ${5|true,false|},",
+      "    action_delete: ${6|false,true|},",
+      "    action_query: false,",
+      "    order: ${7:100},",
+      "    active: true,",
+      "    script: `(function executeRule(current, previous) {",
+      "    ${8:// Exit early if not relevant}",
+      "    ${9:if (!current.field.changes()) return;}",
+      "",
+      "    try {",
+      "        // Implementation",
+      "        $0",
+      "    } catch (e) {",
+      "        gs.error('BR-${1:Rule Name}: ' + e.message);",
+      "    }",
+      "})(current, previous);`",
+      "  }",
+      "})"
+    ],
+    "description": "Create a Business Rule"
+  },
+
+  "SN: Create ACL": {
+    "prefix": ["sn-acl", "snacl"],
+    "body": [
+      "SN-Create-Record({",
+      "  table_name: \"sys_security_acl\",",
+      "  data: {",
+      "    name: \"${1:table_name}\",",
+      "    operation: \"${2|read,write,create,delete|}\",",
+      "    admin_overrides: true,",
+      "    active: true,",
+      "    description: \"${3:ACL description}\"",
+      "  }",
+      "})"
+    ],
+    "description": "Create an ACL"
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // UPDATE & DELETE
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  "SN: Update Record": {
+    "prefix": ["sn-update", "snupdate"],
+    "body": [
+      "SN-Update-Record({",
+      "  table_name: \"${1:table_name}\",",
+      "  sys_id: \"${2:sys_id}\",",
+      "  data: {",
+      "    ${3:field}: \"${4:value}\"",
+      "  }",
+      "})"
+    ],
+    "description": "Update an existing record"
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // TESTING & VALIDATION
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  "SN: Execute Background Script": {
+    "prefix": ["sn-script", "snscript", "sn-bg"],
+    "body": [
+      "SN-Execute-Background-Script({",
+      "  script: `",
+      "    ${1:// Your script here}",
+      "    $0",
+      "  `,",
+      "  execution_method: \"trigger\"",
+      "})"
+    ],
+    "description": "Execute a background script"
+  },
+
+  "SN: Unit Test Template": {
+    "prefix": ["sn-test", "sntest"],
+    "body": [
+      "SN-Execute-Background-Script({",
+      "  script: `",
+      "    var T = {",
+      "      results: [],",
+      "      assertEqual: function(a, e, m) {",
+      "        var p = a === e;",
+      "        this.results.push({t:m, p:p, a:a, e:e});",
+      "        return p;",
+      "      },",
+      "      assertTrue: function(c, m) {",
+      "        this.results.push({t:m, p:c, a:c, e:true});",
+      "        return c;",
+      "      },",
+      "      report: function() {",
+      "        var pass=0, fail=0;",
+      "        this.results.forEach(function(r) {",
+      "          if(r.p) pass++; else fail++;",
+      "          gs.info((r.p?'PASS':'FAIL')+': '+r.t);",
+      "          if(!r.p) gs.info('  Expected:'+r.e+' Got:'+r.a);",
+      "        });",
+      "        gs.info('=== '+pass+' passed, '+fail+' failed ===');",
+      "        return fail===0;",
+      "      }",
+      "    };",
+      "",
+      "    // TEST: ${1:Test description}",
+      "    (function() {",
+      "      ${2:// Your test here}",
+      "      T.assertTrue(${3:condition}, '${4:assertion message}');",
+      "    })();",
+      "",
+      "    T.report();",
+      "  `,",
+      "  execution_method: \"trigger\"",
+      "})"
+    ],
+    "description": "Unit test template with test runner"
+  },
+
+  "SN: Verify Update Set": {
+    "prefix": ["sn-verify", "snverify"],
+    "body": [
+      "SN-Query-Table({",
+      "  table_name: \"sys_update_xml\",",
+      "  query: \"update_set=${1:update_set_sys_id}^sys_created_onONToday@javascript:gs.beginningOfToday()@javascript:gs.endOfToday()\",",
+      "  fields: \"name,type,action,target_name\"",
+      "})"
+    ],
+    "description": "Verify update set contents"
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // UPDATE SET MANAGEMENT
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  "SN: List Update Sets": {
+    "prefix": ["sn-list-us", "snlistus"],
+    "body": [
+      "SN-List-Update-Sets({",
+      "  query: \"state=in progress\"",
+      "})"
+    ],
+    "description": "List in-progress update sets"
+  },
+
+  "SN: Move Records to Update Set": {
+    "prefix": ["sn-move", "snmove"],
+    "body": [
+      "SN-Move-Records-To-Update-Set({",
+      "  update_set_id: \"${1:correct_update_set_sys_id}\",",
+      "  source_update_set: \"${2:Default}\"",
+      "})"
+    ],
+    "description": "Move records to correct update set"
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // GLIDE SCRIPT PATTERNS
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  "Glide: GlideRecord Query": {
+    "prefix": ["gr-query", "grquery"],
+    "body": [
+      "var gr = new GlideRecord('${1:table_name}');",
+      "gr.addQuery('${2:field}', '${3:value}');",
+      "gr.query();",
+      "while (gr.next()) {",
+      "    ${0:// Process record}",
+      "}"
+    ],
+    "description": "GlideRecord query pattern"
+  },
+
+  "Glide: GlideRecord Get": {
+    "prefix": ["gr-get", "grget"],
+    "body": [
+      "var gr = new GlideRecord('${1:table_name}');",
+      "if (gr.get('${2:sys_id}')) {",
+      "    ${0:// Record found}",
+      "}"
+    ],
+    "description": "GlideRecord get by sys_id"
+  },
+
+  "Glide: GlideRecord Insert": {
+    "prefix": ["gr-insert", "grinsert"],
+    "body": [
+      "var gr = new GlideRecord('${1:table_name}');",
+      "gr.initialize();",
+      "gr.${2:field} = '${3:value}';",
+      "var sysId = gr.insert();",
+      "gs.info('Created: ' + sysId);"
+    ],
+    "description": "GlideRecord insert pattern"
+  },
+
+  "Glide: GlideAggregate Count": {
+    "prefix": ["ga-count", "gacount"],
+    "body": [
+      "var ga = new GlideAggregate('${1:table_name}');",
+      "ga.addQuery('${2:field}', '${3:value}');",
+      "ga.addAggregate('COUNT');",
+      "ga.query();",
+      "var count = 0;",
+      "if (ga.next()) {",
+      "    count = ga.getAggregate('COUNT');",
+      "}",
+      "gs.info('Count: ' + count);"
+    ],
+    "description": "GlideAggregate count pattern"
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PERSONA ACTIVATION
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  "Persona: Analyst": {
+    "prefix": ["persona-analyst", "sn-analyst"],
+    "body": [
+      "You are now acting as a ServiceNow Business Analyst (sn-analyst persona).",
+      "",
+      "Your expertise: Requirements gathering, user stories, process analysis, gap analysis.",
+      "",
+      "Your task: ${1:Describe the requirements task}",
+      "",
+      "Please:",
+      "1. Ask clarifying questions if needed",
+      "2. Document findings in structured format",
+      "3. Create user stories with acceptance criteria",
+      "4. Identify technical implications"
+    ],
+    "description": "Activate analyst persona"
+  },
+
+  "Persona: Architect": {
+    "prefix": ["persona-architect", "sn-architect"],
+    "body": [
+      "You are now acting as a ServiceNow Technical Architect (sn-architect persona).",
+      "",
+      "Your expertise: Data modeling, integration patterns, security design, performance.",
+      "",
+      "Your task: ${1:Describe the design task}",
+      "",
+      "Please:",
+      "1. Review requirements",
+      "2. Design data model",
+      "3. Design scripts and integrations",
+      "4. Create ADRs for key decisions"
+    ],
+    "description": "Activate architect persona"
+  },
+
+  "Persona: Developer": {
+    "prefix": ["persona-developer", "sn-developer"],
+    "body": [
+      "You are now acting as a ServiceNow Developer (sn-developer persona).",
+      "",
+      "Your expertise: GlideRecord, Script Includes, Business Rules, REST integrations.",
+      "",
+      "Your task: ${1:Describe the implementation task}",
+      "",
+      "Please:",
+      "1. Set context (app scope, update set)",
+      "2. Implement in proper order",
+      "3. Batch operations (5-20 per message)",
+      "4. Track sys_ids",
+      "5. Verify update set capture"
+    ],
+    "description": "Activate developer persona"
+  },
+
+  "Persona: QA": {
+    "prefix": ["persona-qa", "sn-qa"],
+    "body": [
+      "You are now acting as a ServiceNow QA Engineer (sn-qa persona).",
+      "",
+      "Your expertise: Test planning, ATF, security testing, regression testing.",
+      "",
+      "Your task: ${1:Describe what needs testing}",
+      "",
+      "Please:",
+      "1. Create test plan",
+      "2. Write unit tests",
+      "3. Write integration tests",
+      "4. Write security tests",
+      "5. Document results"
+    ],
+    "description": "Activate QA persona"
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // DOCUMENTATION
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  "Doc: User Story": {
+    "prefix": ["doc-story", "userstory"],
+    "body": [
+      "## US-${1:NNN}: ${2:Title}",
+      "",
+      "**As a** ${3:role}",
+      "**I want** ${4:capability}",
+      "**So that** ${5:business value}",
+      "",
+      "### Acceptance Criteria",
+      "1. **Given** ${6:precondition}",
+      "   **When** ${7:action}",
+      "   **Then** ${8:expected result}",
+      "",
+      "### Technical Notes",
+      "- Affected tables: ${9:list}",
+      "- Security requirements: ${10:ACL needs}",
+      "",
+      "### Test Scenarios",
+      "- **Happy path**: ${11:description}",
+      "- **Edge case**: ${12:description}"
+    ],
+    "description": "User story template"
+  },
+
+  "Doc: ADR": {
+    "prefix": ["doc-adr", "adr"],
+    "body": [
+      "## ADR-${1:NNN}: ${2:Decision Title}",
+      "",
+      "### Status",
+      "${3|Proposed,Accepted,Deprecated,Superseded|}",
+      "",
+      "### Context",
+      "${4:What is the issue?}",
+      "",
+      "### Decision",
+      "${5:What did we decide?}",
+      "",
+      "### Consequences",
+      "**Positive:**",
+      "- ${6:benefit}",
+      "",
+      "**Negative:**",
+      "- ${7:tradeoff}",
+      "",
+      "### Alternatives Considered",
+      "1. ${8:Alternative}: ${9:Why rejected}"
+    ],
+    "description": "Architecture Decision Record template"
+  }
+}
