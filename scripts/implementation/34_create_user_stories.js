@@ -1,0 +1,283 @@
+// 34_create_user_stories.js
+// Run in: Scripts - Background (Global scope)
+// Purpose: Creates rm_story records for Skills Hub user stories
+// Usage: Paste the stories JSON array below, then run in Scripts - Background
+
+var stories = [
+    {
+        id: 'SH-001',
+        short_description: 'As an employee, I want to view my skill portfolio so I can see all my current skills, proficiency levels, and endorsements in one place',
+        description: 'Employees need a centralized Service Portal page (skills_hub) with a My Profile widget that displays all skills from sys_user_has_skill, including proficiency level, interest level, peer endorsement count, and manager validation status. The widget should allow inline editing of interest level (high/neutral/low) on the employee\'s own records.',
+        acceptance_criteria: '<ul><li>Employee can access the Skills Hub portal page at ?id=skills_hub</li><li>My Profile widget displays all skills assigned to the logged-in user</li><li>Each skill shows: skill name, proficiency level, interest level, endorsement count, validation status</li><li>Employee can edit their own interest level inline (high, neutral, low)</li><li>Non-authenticated users cannot access the page</li><li>Widget loads within 3 seconds for users with up to 50 skills</li></ul>',
+        phase: 'Baseline',
+        epic: 'Employee Skill Portfolio'
+    },
+    {
+        id: 'SH-002',
+        short_description: 'As an employee, I want to search for colleagues by skill so I can find subject matter experts across the organization',
+        description: 'The Find Expert widget allows any authenticated user to search for colleagues by skill name. Results display matching users with their proficiency level, interest level, and endorsement count, ordered by proficiency descending. An optional interest filter lets users narrow results to only those with high interest in using that skill.',
+        acceptance_criteria: '<ul><li>Search field accepts skill name text input</li><li>Results show matching users with skill name, proficiency, interest level, and endorsement count</li><li>Results are ordered by proficiency level descending</li><li>Optional interest level filter (high/neutral/low) narrows results</li><li>Empty search returns no results (not all users)</li><li>Any authenticated user with skill_user role can search</li></ul>',
+        phase: 'Baseline',
+        epic: 'Expert Discovery'
+    },
+    {
+        id: 'SH-003',
+        short_description: 'As an employee, I want to endorse a colleague\'s skill so I can vouch for their expertise',
+        description: 'From the Find Expert widget, an employee can endorse a colleague\'s skill by clicking an endorse button. The system creates a u_m2m_skill_endorsement record linking the endorser to the skill record. Business rules prevent self-endorsement and duplicate endorsements. The endorsement count on sys_user_has_skill is automatically incremented.',
+        acceptance_criteria: '<ul><li>Endorse button appears next to each skill in search results</li><li>Clicking endorse creates a u_m2m_skill_endorsement record</li><li>u_peer_endorsement_count on sys_user_has_skill increments by 1</li><li>Self-endorsement is blocked with a user-friendly error message</li><li>Duplicate endorsement (same endorser + same skill record) is blocked</li><li>Endorser must have skill_user role</li></ul>',
+        phase: 'Baseline',
+        epic: 'Peer Endorsement'
+    },
+    {
+        id: 'SH-004',
+        short_description: 'As a manager, I want to view my team\'s skill matrix so I can assess skill coverage and gaps across my direct reports',
+        description: 'The Manager Matrix widget displays a grid of all direct reports and their skills, including proficiency levels, interest levels, endorsement counts, and validation status. The widget only appears for users who have direct reports (manager field on sys_user). The tab is conditionally rendered in the Skills Hub container.',
+        acceptance_criteria: '<ul><li>Manager Matrix tab only appears for users with at least one direct report</li><li>Matrix shows all direct reports as rows and their skills as columns/cards</li><li>Each cell shows proficiency level, interest level, endorsement count, and validation status</li><li>Manager can see which skills have been validated vs. pending</li><li>Non-managers do not see the Manager Matrix tab</li><li>Widget handles managers with up to 30 direct reports</li></ul>',
+        phase: 'Baseline',
+        epic: 'Manager Oversight'
+    },
+    {
+        id: 'SH-005',
+        short_description: 'As a manager, I want to validate a direct report\'s skill so I can confirm their proficiency level is accurate',
+        description: 'From the Manager Matrix widget, a manager can validate a direct report\'s skill. Validation sets u_last_manager_validation to current date/time and u_validation_status to \'validated\'. The system verifies the caller is the user\'s actual manager before allowing the action. A business rule automatically sets validation status when u_last_manager_validation changes.',
+        acceptance_criteria: '<ul><li>Validate action is available on each skill in the Manager Matrix</li><li>Only the user\'s direct manager can validate (server-side authorization check)</li><li>u_last_manager_validation is set to current GlideDateTime</li><li>u_validation_status is automatically set to \'validated\'</li><li>Validation is reflected immediately in the UI</li><li>Non-managers receive an error if they attempt validation</li></ul>',
+        phase: 'Phase 2',
+        epic: 'Manager Oversight'
+    },
+    {
+        id: 'SH-006',
+        short_description: 'As a manager, I want to dispute a direct report\'s self-assessed skill level so I can provide my own assessment when I disagree',
+        description: 'From the Manager Matrix widget, a manager can dispute a skill by setting u_validation_status to \'disputed\', recording u_validation_notes with justification, and optionally setting u_manager_assessed_level to their own proficiency assessment. The employee is notified via email when a skill is disputed.',
+        acceptance_criteria: '<ul><li>Dispute action is available alongside validate in the Manager Matrix</li><li>Manager can enter notes explaining the dispute (required field)</li><li>Manager can set their own assessed proficiency level (optional)</li><li>u_validation_status is set to \'disputed\'</li><li>Employee receives an email notification about the dispute</li><li>Only the user\'s direct manager can dispute (server-side check)</li></ul>',
+        phase: 'Phase 2',
+        epic: 'Manager Oversight'
+    },
+    {
+        id: 'SH-007',
+        short_description: 'As a manager, I want to bulk-validate all pending skills for a direct report so I can efficiently confirm multiple skills at once',
+        description: 'The Manager Matrix widget provides a bulk validate button per employee that validates all skills with a non-validated status in a single operation. This calls the bulkValidate method in SkillsHubUtils which iterates through all sys_user_has_skill records for the specified user where u_validation_status is not \'validated\'.',
+        acceptance_criteria: '<ul><li>Bulk Validate button appears per employee row in the Manager Matrix</li><li>Clicking bulk validate updates all non-validated skills for that employee</li><li>Each skill\'s u_last_manager_validation and u_validation_status are updated</li><li>Server-side authorization confirms caller is the employee\'s manager</li><li>UI refreshes to show all skills as validated</li><li>Button is disabled/hidden if all skills are already validated</li></ul>',
+        phase: 'Phase 2',
+        epic: 'Manager Oversight'
+    },
+    {
+        id: 'SH-008',
+        short_description: 'As a manager, I want to set an independent proficiency assessment for a direct report\'s skill so the organization can compare self-assessed vs manager-assessed levels',
+        description: 'Managers can set u_manager_assessed_level on a direct report\'s sys_user_has_skill record independently of the validation workflow. This allows organizations to identify gaps between self-assessment and manager assessment. The widget displays both levels side-by-side with color coding when they differ.',
+        acceptance_criteria: '<ul><li>Manager can set assessed level (novice/intermediate/proficient/advanced/expert) on any direct report\'s skill</li><li>Manager assessed level is stored separately from the employee\'s self-assessed level</li><li>Both levels are displayed in the Manager Matrix</li><li>Visual indicator (color coding) highlights when levels differ</li><li>Only the employee\'s direct manager can set this field</li><li>Assessment can be updated without changing validation status</li></ul>',
+        phase: 'Phase 2',
+        epic: 'Manager Oversight'
+    },
+    {
+        id: 'SH-009',
+        short_description: 'As an employee, I want to request a new skill be added to the catalog so I can track skills not yet in the system',
+        description: 'A service catalog item (\'Request New Skill\') allows any authenticated user to submit a request for a new skill. The request captures skill_name, category (reference to cmn_skill_category), and justification. Requests are stored in u_skill_request with status tracking (pending/approved/rejected). Skill admins review and approve or reject requests.',
+        acceptance_criteria: '<ul><li>Catalog item \'Request New Skill\' is available to all authenticated users</li><li>Form captures: skill name (required), category (reference picker), justification (multi-line text)</li><li>Submission creates a u_skill_request record with status \'pending\'</li><li>Requester receives email confirmation of submission</li><li>Skill admin can approve or reject the request</li><li>Approved requests trigger creation of the skill in cmn_skill</li><li>Requester is notified of approval or rejection with reason</li></ul>',
+        phase: 'Phase 2',
+        epic: 'Skill Catalog Management'
+    },
+    {
+        id: 'SH-010',
+        short_description: 'As a skill admin, I want to define required skills per job title so the organization can identify skill gaps at the role level',
+        description: 'The u_skill_profile_requirement table allows skill admins to define which skills are required, preferred, or nice-to-have for each job title. Each record links a job title string to a cmn_skill reference with a required proficiency level and priority. This data feeds gap analysis reporting.',
+        acceptance_criteria: '<ul><li>Skill admin can create profile requirement records</li><li>Each record specifies: job title, skill (cmn_skill reference), required level, priority (required/preferred/nice_to_have)</li><li>Records can be activated or deactivated</li><li>Only users with skill_admin or admin role can create/edit requirements</li><li>Requirements can be queried by job title to identify gaps for employees in that role</li></ul>',
+        phase: 'Phase 1',
+        epic: 'Skill Catalog Management'
+    },
+    {
+        id: 'SH-011',
+        short_description: 'As a system, I want to automatically expire skills not validated in over 12 months so the skill data stays current and accurate',
+        description: 'A daily scheduled job (Skills Hub - Skill Expiration Check) runs at 02:00 and queries sys_user_has_skill for records where u_last_manager_validation is older than 12 months and u_validation_status is \'validated\'. These records are updated to u_validation_status = \'expired\', prompting managers to re-validate.',
+        acceptance_criteria: '<ul><li>Scheduled job runs daily at 02:00</li><li>Identifies skills where u_last_manager_validation is more than 12 months ago</li><li>Only processes skills with u_validation_status = \'validated\'</li><li>Sets u_validation_status to \'expired\' for matching records</li><li>Does not affect skills that were never validated (status = \'pending\')</li><li>Job completes without errors for up to 10,000 skill records</li></ul>',
+        phase: 'Phase 1',
+        epic: 'Data Quality & Automation'
+    },
+    {
+        id: 'SH-012',
+        short_description: 'As a system, I want to send monthly reminders to managers about unvalidated skills so validation doesn\'t fall behind',
+        description: 'A monthly scheduled job identifies managers whose direct reports have skills with u_validation_status = \'pending\' and sends a summary email listing which employees have unvalidated skills. This encourages regular skill validation cadence.',
+        acceptance_criteria: '<ul><li>Scheduled job runs monthly</li><li>Identifies managers with direct reports who have pending/unvalidated skills</li><li>Sends one summary email per manager listing employees and their unvalidated skill count</li><li>Does not send email if all direct reports\' skills are validated</li><li>Email includes a link to the Skills Hub portal page</li></ul>',
+        phase: 'Phase 2',
+        epic: 'Data Quality & Automation'
+    },
+    {
+        id: 'SH-013',
+        short_description: 'As an employee, I want to see my gamification tier and points so I am motivated to develop and share my skills',
+        description: 'The My Profile widget displays a tier badge with icon, total points, tier name, and a progress bar showing progress toward the next tier. Points are calculated in real-time from existing data: skills owned (+10), proficiency levels (+2 to +35), endorsements received (+5), endorsements given (+3), manager validations (+15), and skills added this quarter (+8). Five tiers: Starter (0-49), Contributor (50-149), Specialist (150-299), Trailblazer (300-499), Luminary (500+).',
+        acceptance_criteria: '<ul><li>My Profile widget shows tier badge with FontAwesome icon</li><li>Total points are displayed and calculated from current data</li><li>Progress bar shows percentage toward next tier threshold</li><li>Points breakdown: skills owned (+10), proficiency bonus (+2 to +35 per level), endorsements received (+5 each), endorsements given (+3 each), validated skills (+15 each), skills added this quarter (+8 each)</li><li>Five tiers displayed correctly: Starter, Contributor, Specialist, Trailblazer, Luminary</li><li>Tier recalculates on page load (no stale cached values)</li></ul>',
+        phase: 'Phase 3',
+        epic: 'Gamification'
+    },
+    {
+        id: 'SH-014',
+        short_description: 'As an employee, I want to see a team leaderboard so I can compare my skill development progress with colleagues',
+        description: 'A new Leaderboard widget displays users ranked by their gamification points within the same department. The leaderboard shows rank, user name, tier badge, total points, skill count, and endorsement count. It recalculates on demand and is accessible via the Skills Hub tab navigation.',
+        acceptance_criteria: '<ul><li>Leaderboard widget displays users ranked by points within the viewer\'s department</li><li>Each row shows: rank, user avatar/name, tier icon, total points, skill count, endorsement count</li><li>Current user\'s row is highlighted</li><li>Leaderboard is accessible via the Skills Hub tab navigation</li><li>Results are paginated or limited to top 25</li><li>Rankings update on each page load</li></ul>',
+        phase: 'Phase 3',
+        epic: 'Gamification'
+    },
+    {
+        id: 'SH-015',
+        short_description: 'As an employee, I want to add a skill to my profile from the portal so I don\'t need to navigate to the backend sys_user_has_skill table',
+        description: 'The My Profile widget includes an Add Skill modal that lets users search for skills from cmn_skill and add them to their profile. The modal supports selecting a proficiency level, interest level, and optionally linking the skill to multiple category groups. When submitted, a new sys_user_has_skill record is created.',
+        acceptance_criteria: '<ul><li>Add Skill button appears on the My Profile widget</li><li>Modal opens with a searchable skill picker (from cmn_skill)</li><li>User can select proficiency level (novice to expert)</li><li>User can select interest level (high/neutral/low)</li><li>Submitting creates a sys_user_has_skill record for the logged-in user</li><li>Duplicate skill addition is prevented with a user-friendly message</li><li>Modal supports category group selection for cross-category skills</li></ul>',
+        phase: 'Phase 3',
+        epic: 'Employee Skill Portfolio'
+    },
+    {
+        id: 'SH-016',
+        short_description: 'As an employee, I want my skills grouped by name across categories so I can see related skills together instead of duplicated entries',
+        description: 'When a skill name exists in multiple categories (e.g., \'Python\' in both \'Technology\' and \'Analytics\'), the My Profile widget groups them by name and shows category tags. The SkillsHubGrouping script include handles cross-category sync so that proficiency changes propagate to all instances of the same-named skill for the user.',
+        acceptance_criteria: '<ul><li>Skills with the same name across categories are grouped into a single row</li><li>Category tags show which categories the skill belongs to</li><li>Changing proficiency on one instance updates all instances for that user</li><li>Grouping is handled server-side by SkillsHubGrouping script include</li><li>Business rule syncs proficiency changes across same-named skills automatically</li></ul>',
+        phase: 'Phase 3',
+        epic: 'Employee Skill Portfolio'
+    },
+    {
+        id: 'SH-017',
+        short_description: 'As a manager, I want inline validation controls in the Manager Matrix so I can validate or dispute skills without leaving the page',
+        description: 'The Manager Matrix widget adds an inline validation modal: clicking a skill opens a modal showing the employee\'s self-assessed level, a dropdown for manager assessment, a notes field, and Validate/Dispute buttons. Filter and sort controls allow managers to view skills by validation status or identify the largest gaps between self and manager assessment.',
+        acceptance_criteria: '<ul><li>Clicking a skill in the Manager Matrix opens an inline modal</li><li>Modal shows employee\'s self-assessed proficiency level</li><li>Manager can select their assessed level from a dropdown</li><li>Manager can enter validation notes</li><li>Validate button sets status to validated and records timestamp</li><li>Dispute button sets status to disputed with required notes</li><li>Filter controls allow filtering by validation status (pending/validated/disputed/expired)</li><li>Sort controls allow sorting by proficiency gap (self vs manager)</li></ul>',
+        phase: 'Phase 3',
+        epic: 'Manager Oversight'
+    },
+    {
+        id: 'SH-018',
+        short_description: 'As an employee, I want email notifications when my skills are validated or disputed so I stay informed about my skill status',
+        description: 'Five email notification templates are configured: skill request submitted (to requester), skill request approved (to requester), skill request rejected (to requester with reason), skill validated by manager (to employee), and skill disputed by manager (to employee with notes). All notifications include a link to the Skills Hub portal page.',
+        acceptance_criteria: '<ul><li>Employee receives email when a skill is validated by their manager</li><li>Employee receives email when a skill is disputed, including manager\'s notes</li><li>Requester receives confirmation email when a skill request is submitted</li><li>Requester receives email when a skill request is approved</li><li>Requester receives email when a skill request is rejected, including rejection reason</li><li>All emails include a direct link to the Skills Hub portal page</li></ul>',
+        phase: 'Phase 2',
+        epic: 'Notifications'
+    },
+    {
+        id: 'SH-019',
+        short_description: 'As a workforce planner, I want to see skill supply vs demand analytics so I can identify organizational skill gaps',
+        description: 'A Performance Analytics dashboard with three tabs provides organizational skill intelligence. Tab 1 (Supply/Demand Overview) shows top skills demand over time, skill hours by category, and proficiency distribution. Tab 2 (Capacity Analysis) shows utilization gauges, demand heatmaps, and trending skills. Tab 3 (Growth Trends) tracks skill growth and story complexity trends. Six PA indicators and two breakdowns power the dashboard.',
+        acceptance_criteria: '<ul><li>PA Dashboard has three tabs: Supply/Demand Overview, Capacity Analysis, Growth Trends</li><li>Supply indicator counts users per skill at each proficiency level</li><li>Demand indicator counts stories/tasks requiring each skill</li><li>Capacity Utilization shows supply-to-demand ratio per skill</li><li>Endorsement Velocity tracks endorsements per skill per month</li><li>Validation Rate shows percentage of skills validated by managers</li><li>Skill Growth tracks new skills added per month</li><li>Breakdowns available by department and proficiency level</li></ul>',
+        phase: 'Phase 4',
+        epic: 'Analytics & Reporting'
+    },
+    {
+        id: 'SH-020',
+        short_description: 'As a workforce planner, I want a gap analysis view showing where skill supply falls short of demand so I can prioritize training investments',
+        description: 'A custom Gap Analysis widget identifies skills where supply (number of skilled employees) is less than demand (number of stories/tasks requiring that skill). Results are ranked by severity of the gap. The widget helps workforce planners and managers identify which skills need the most urgent development or hiring.',
+        acceptance_criteria: '<ul><li>Gap Analysis widget shows skills where supply is less than demand</li><li>Each row shows: skill name, supply count, demand count, gap severity</li><li>Results are ranked by gap severity (largest gaps first)</li><li>Widget is accessible from the PA Dashboard or as a standalone page</li><li>Data refreshes on page load</li></ul>',
+        phase: 'Phase 4',
+        epic: 'Analytics & Reporting'
+    },
+    {
+        id: 'SH-021',
+        short_description: 'As a project manager, I want to tag stories with required skills so the system can calculate skill demand across the portfolio',
+        description: 'The u_story_skill_assignment table creates a many-to-many relationship between stories (rm_story/task) and skills (cmn_skill). Each assignment record includes estimated hours and required proficiency level. This demand-side data feeds the PA indicators and gap analysis widget.',
+        acceptance_criteria: '<ul><li>u_story_skill_assignment table is available with fields: story, skill, estimated_hours, proficiency_required, active</li><li>Story reference works with rm_story (or falls back to task table)</li><li>Skill reference links to cmn_skill</li><li>Proficiency required defaults to intermediate</li><li>Estimated hours accepts decimal values</li><li>Records can be deactivated without deletion</li></ul>',
+        phase: 'Phase 4',
+        epic: 'Analytics & Reporting'
+    },
+    {
+        id: 'SH-022',
+        short_description: 'As a system, I want to auto-detect required skills from story descriptions so project managers don\'t have to manually tag every story',
+        description: 'The SkillsHubDetection script include provides a detectSkillsInText method that pattern-matches story descriptions against the cmn_skill catalog to auto-suggest skill tags for stories. This reduces the manual effort of tagging stories with required skills and improves demand data accuracy.',
+        acceptance_criteria: '<ul><li>SkillsHubDetection.detectSkillsInText accepts a text string parameter</li><li>Method matches text against skill names in cmn_skill</li><li>Returns array of matched skills with confidence indicators</li><li>Matching is case-insensitive</li><li>Partial word matches are excluded to avoid false positives (e.g., \'Java\' does not match \'JavaScript\')</li><li>Results can be used to auto-create u_story_skill_assignment records</li></ul>',
+        phase: 'Phase 4',
+        epic: 'Data Quality & Automation'
+    },
+    {
+        id: 'SH-023',
+        short_description: 'As an admin, I want role-based access controls on all Skills Hub tables so data is protected according to organizational policies',
+        description: 'ACLs enforce role-based access across all Skills Hub tables. Endorsement create/read requires skill_user role. Endorsement write/delete is restricted to the endorser or admin. Manager-only fields (assessed level, validation status, notes) require the viewer to be the employee\'s direct manager or an admin. Skill requests can be created by any authenticated user but only modified by skill_admin. Profile requirements are admin-only.',
+        acceptance_criteria: '<ul><li>u_m2m_skill_endorsement: READ and CREATE require skill_user role</li><li>u_m2m_skill_endorsement: WRITE and DELETE restricted to endorser or admin</li><li>sys_user_has_skill.u_interest_level: WRITE restricted to record owner</li><li>sys_user_has_skill.u_manager_assessed_level: WRITE restricted to employee\'s manager or admin</li><li>sys_user_has_skill.u_validation_status: WRITE restricted to employee\'s manager or admin</li><li>u_skill_request: CREATE open to authenticated users; WRITE restricted to skill_admin or admin</li><li>u_skill_profile_requirement: CRUD restricted to admin only</li><li>u_skill_category_group: CRUD restricted to skill_admin or admin</li></ul>',
+        phase: 'Phase 1',
+        epic: 'Security & Access Control'
+    },
+    {
+        id: 'SH-024',
+        short_description: 'As a system, I want business rules to maintain endorsement count integrity so the count always reflects the actual number of endorsement records',
+        description: 'Two business rules on u_m2m_skill_endorsement maintain the u_peer_endorsement_count field on sys_user_has_skill. An after-insert rule increments the count. An after-delete rule decrements the count. Two before-insert rules prevent self-endorsement and duplicate endorsements with user-friendly abort messages.',
+        acceptance_criteria: '<ul><li>After-insert business rule increments u_peer_endorsement_count on the target sys_user_has_skill record</li><li>After-delete business rule decrements u_peer_endorsement_count (minimum 0)</li><li>Before-insert rule aborts with message if endorser equals the skill owner</li><li>Before-insert rule aborts with message if endorser has already endorsed the same skill record</li><li>Count stays accurate even under concurrent endorsement activity</li></ul>',
+        phase: 'Phase 1',
+        epic: 'Data Quality & Automation'
+    },
+    {
+        id: 'SH-025',
+        short_description: 'As an admin, I want Skills Hub navigation modules in the ServiceNow left nav so users can easily access the portal from the platform UI',
+        description: 'Four navigation modules are created under a Skills Hub application menu in the ServiceNow left nav: My Portfolio, Find Expert, Manager View, and Leaderboard. Each module links to the skills_hub Service Portal page with the appropriate tab pre-selected. The navigation supports both desktop and mobile layouts.',
+        acceptance_criteria: '<ul><li>Skills Hub application menu appears in the ServiceNow left navigation</li><li>Four modules: My Portfolio, Find Expert, Manager View, Leaderboard</li><li>Each module opens the skills_hub portal page with the correct tab selected</li><li>Manager View module is visible to users with skill_manager or admin role</li><li>Navigation renders correctly on both desktop and mobile</li></ul>',
+        phase: 'Phase 3',
+        epic: 'Navigation & UI'
+    },
+    {
+        id: 'SH-026',
+        short_description: 'As an employee, I want tab navigation in the Skills Hub portal so I can easily switch between My Portfolio, Find an Expert, and Leaderboard views',
+        description: 'A Tab Navigation widget provides a horizontal tab bar at the top of the Skills Hub page with tabs for My Portfolio, Find an Expert, and Leaderboard. The Manager Matrix tab is conditionally shown only for users with direct reports. Tab selection is handled client-side without full page reload.',
+        acceptance_criteria: '<ul><li>Tab bar displays at the top of the Skills Hub page</li><li>Three default tabs: My Portfolio, Find an Expert, Leaderboard</li><li>Manager Matrix tab appears only for users with direct reports</li><li>Tab switching does not cause a full page reload</li><li>Active tab is visually highlighted</li><li>Tab state persists if user refreshes the page (URL parameter)</li></ul>',
+        phase: 'Phase 3',
+        epic: 'Navigation & UI'
+    },
+    {
+        id: 'SH-027',
+        short_description: 'As a skill admin, I want to group skills across categories so related skills in different domains are linked together',
+        description: 'The u_skill_category_group and u_m2m_skill_category_group tables allow skill admins to create named groups (e.g., \'Data Science\') and link skills from multiple categories into the group. This supports the cross-category grouping display in the My Profile widget and ensures proficiency sync across same-named skills.',
+        acceptance_criteria: '<ul><li>Skill admin can create category groups with a name and description</li><li>Skills can be linked to groups via the junction table u_m2m_skill_category_group</li><li>A skill can belong to multiple groups</li><li>A group can contain skills from different cmn_skill_category records</li><li>Only skill_admin or admin can manage groups</li><li>Groups are used by the My Profile widget for display grouping</li></ul>',
+        phase: 'Phase 1',
+        epic: 'Skill Catalog Management'
+    }
+];
+
+// ============================================================
+// Configuration - update these before running
+// ============================================================
+// var PRODUCT_SYS_ID = '';  // Optional: sys_id of your rm_product if you want to link stories to a product
+// var SPRINT_SYS_ID = '';   // Optional: sys_id of an rm_sprint to assign stories to
+
+// ============================================================
+// Execution
+// ============================================================
+var created = 0;
+var skipped = 0;
+var errors = 0;
+
+for (var i = 0; i < stories.length; i++) {
+    var s = stories[i];
+
+    // Check if story already exists (by short_description prefix match using the ID)
+    var check = new GlideRecord('rm_story');
+    check.addQuery('short_description', 'CONTAINS', s.short_description.substring(0, 80));
+    check.setLimit(1);
+    check.query();
+
+    if (check.hasNext()) {
+        gs.info('SKIPPED (already exists): ' + s.id + ' - ' + s.short_description.substring(0, 60));
+        skipped++;
+        continue;
+    }
+
+    try {
+        var gr = new GlideRecord('rm_story');
+        gr.initialize();
+        gr.setValue('short_description', s.short_description);
+        gr.setValue('description', s.description);
+        gr.setValue('acceptance_criteria', s.acceptance_criteria);
+
+        // Uncomment if you set the product/sprint sys_ids above
+        // if (PRODUCT_SYS_ID) gr.setValue('product', PRODUCT_SYS_ID);
+        // if (SPRINT_SYS_ID) gr.setValue('sprint', SPRINT_SYS_ID);
+
+        var sys_id = gr.insert();
+
+        if (sys_id) {
+            gs.info('CREATED: ' + s.id + ' | ' + sys_id + ' | ' + s.short_description.substring(0, 60));
+            created++;
+        } else {
+            gs.error('FAILED TO INSERT: ' + s.id + ' - ' + s.short_description.substring(0, 60));
+            errors++;
+        }
+    } catch (e) {
+        gs.error('ERROR creating ' + s.id + ': ' + e.message);
+        errors++;
+    }
+}
+
+gs.info('========================================');
+gs.info('Skills Hub User Stories - Complete');
+gs.info('Created: ' + created + ' | Skipped: ' + skipped + ' | Errors: ' + errors);
+gs.info('Total stories processed: ' + stories.length);
+gs.info('========================================');

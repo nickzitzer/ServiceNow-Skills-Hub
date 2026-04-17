@@ -5,6 +5,14 @@ Thumbs.db
 # Claude Code
 .claude/
 
+# Local AI tool configs
+.agent/
+.gemini/
+.opencode/
+
+# Playwright MCP artifacts (logs, screenshots)
+.playwright-mcp/
+
 # BMAD Framework (if not needed in repo)
 _bmad/
 _bmad-output/

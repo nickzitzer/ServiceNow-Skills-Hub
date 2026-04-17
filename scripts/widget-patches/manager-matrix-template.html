@@ -1,0 +1,136 @@
+<div class="panel-cc">
+  <!-- HEADER & STATS -->
+  <div class="matrix-header">
+     <div>
+        <h3 class="matrix-title">Team Capability Matrix</h3>
+        <p class="matrix-subtitle">Review, validate, and analyze your direct reports' skills.</p>
+     </div>
+     <div class="stats-group">
+        <div class="stat-card" ng-click="c.statusFilter = 'all'" ng-class="{'stat-active': c.statusFilter == 'all'}" style="cursor:pointer;">
+           <span class="stat-val">{{c.stats.reports}}</span>
+           <span class="stat-label">Reports</span>
+        </div>
+        <div class="stat-card" ng-click="c.statusFilter = 'pending'" ng-class="{'stat-active': c.statusFilter == 'pending'}" style="cursor:pointer;">
+           <span class="stat-val text-orange">{{c.stats.pending}}</span>
+           <span class="stat-label">Pending</span>
+        </div>
+        <div class="stat-card" ng-click="c.statusFilter = 'validated'" ng-class="{'stat-active': c.statusFilter == 'validated'}" style="cursor:pointer;">
+           <span class="stat-val text-green">{{c.stats.validated}}</span>
+           <span class="stat-label">Verified</span>
+        </div>
+        <div class="stat-card" ng-click="c.statusFilter = 'disputed'" ng-class="{'stat-active': c.statusFilter == 'disputed'}" style="cursor:pointer;">
+           <span class="stat-val text-red">{{c.stats.disputed}}</span>
+           <span class="stat-label">Disputed</span>
+        </div>
+     </div>
+  </div>
+  <!-- TABLE MATRIX -->
+  <div class="table-container">
+     <table class="table-matrix">
+        <thead>
+           <tr>
+              <th style="width: 250px;">Employee</th>
+              <th>Skills Portfolio</th>
+              <th style="width: 120px;">Actions</th>
+           </tr>
+        </thead>
+        <tbody>
+           <!-- Empty State -->
+           <tr ng-if="c.noData">
+              <td colspan="3" class="text-center" style="padding: 40px;">
+                 <p class="text-muted">No direct reports found with skills data.</p>
+              </td>
+           </tr>
+           <!-- Data Rows -->
+           <tr ng-repeat="(uid, user) in c.data">
+              <!-- Employee Info -->
+              <td style="border-right: 1px solid #f1f5f9;">
+                 <div class="employee-cell">
+                    <div class="avatar-circle">{{user.initials}}</div>
+                    <div>
+                       <span class="emp-name">{{user.name}}</span>
+                       <span class="emp-title">{{user.title}}</span>
+                    </div>
+                 </div>
+              </td>
+              <!-- Skills Grid -->
+              <td>
+                 <div class="skill-grid">
+                    <div class="skill-pill"
+                         ng-repeat="(skillName, details) in user.skills"
+                         ng-if="c.showSkill(details)"
+                         ng-class="{'status-validated': details.validated, 'status-pending': !details.validated && details.status != 'disputed', 'status-disputed': details.status == 'disputed'}">
+
+                       <!-- Tooltip Hint -->
+                       <div class="action-hint" ng-if="!details.validated && details.status != 'disputed'">
+                          <span ng-click="c.validate(uid, skillName, details)">Validate</span> |
+                          <span ng-click="c.openDisputeModal(uid, skillName, details)">Dispute</span>
+                       </div>
+                       <div class="action-hint" ng-if="details.validated">Verified by Manager</div>
+                       <div class="action-hint" ng-if="details.status == 'disputed'">Disputed</div>
+
+                       <!-- Content -->
+                       <span ng-click="c.validate(uid, skillName, details)">{{skillName}}</span>
+                       <span style="font-weight:400; opacity:0.7;">| {{details.level}}</span>
+
+                       <!-- Icons -->
+                       <i class="fa fa-check-circle text-check" ng-if="details.validated"></i>
+                       <i class="fa fa-exclamation-triangle text-disputed" ng-if="details.status == 'disputed'"></i>
+                       <i class="fa fa-heart text-heart interest-icon" ng-if="details.interest=='high'" title="High Interest"></i>
+                    </div>
+
+                    <!-- Empty Skills State -->
+                    <span ng-if="Object.keys(user.skills).length == 0" class="text-muted small" style="padding: 6px 0; font-style:italic;">
+                       No skills recorded.
+                    </span>
+                 </div>
+              </td>
+              <!-- Bulk Actions -->
+              <td class="text-center">
+                 <button class="btn btn-xs btn-success" ng-click="c.bulkValidate(uid, user.name)"
+                         title="Validate all pending skills">
+                    <i class="fa fa-check-double"></i> Validate All
+                 </button>
+              </td>
+           </tr>
+        </tbody>
+     </table>
+  </div>
+</div>
+
+<!-- DISPUTE MODAL -->
+<div class="dispute-overlay" ng-if="c.showDisputeModal" ng-click="c.cancelDispute()">
+   <div class="dispute-modal" ng-click="$event.stopPropagation()">
+      <div class="dispute-header">
+         <h4 style="margin:0; font-weight:700;">Dispute Skill</h4>
+         <i class="fa fa-times" style="cursor:pointer; color:#94a3b8;" ng-click="c.cancelDispute()"></i>
+      </div>
+      <div class="dispute-body">
+         <p class="text-muted" style="margin-bottom:16px;">
+            Disputing <strong>{{c.disputeTarget.skillName}}</strong>. Provide your assessment and justification.
+         </p>
+         <div class="form-group">
+            <label style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b;">Your Assessed Level (Optional)</label>
+            <select class="form-control" ng-model="c.disputeLevel">
+               <option value="">-- Keep as-is --</option>
+               <option value="Novice">Novice</option>
+               <option value="Intermediate">Intermediate</option>
+               <option value="Proficient">Proficient</option>
+               <option value="Advanced">Advanced</option>
+               <option value="Expert">Expert</option>
+            </select>
+         </div>
+         <div class="form-group">
+            <label style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b;">Notes (Required)</label>
+            <textarea class="form-control" rows="3" ng-model="c.disputeNotes"
+                      placeholder="Explain why you disagree with the self-assessed level..."></textarea>
+         </div>
+      </div>
+      <div class="dispute-footer">
+         <button class="btn btn-default" ng-click="c.cancelDispute()">Cancel</button>
+         <button class="btn btn-warning" ng-click="c.submitDispute()" ng-disabled="!c.disputeNotes">
+            <i class="fa fa-exclamation-triangle"></i> Submit Dispute
+         </button>
+      </div>
+   </div>
+</div>

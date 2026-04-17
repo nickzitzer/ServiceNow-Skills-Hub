@@ -1,0 +1,27 @@
+{
+  "name": "servicenow-skills-hub",
+  "version": "1.0.0",
+  "description": "> AI-Assisted ServiceNow Development Framework for GitHub Copilot",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickzitzer/ServiceNow-Skills-Hub.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/nickzitzer/ServiceNow-Skills-Hub/issues"
+  },
+  "homepage": "https://github.com/nickzitzer/ServiceNow-Skills-Hub#readme",
+  "dependencies": {
+    "xml2js": "^0.6.2"
+  }
+}

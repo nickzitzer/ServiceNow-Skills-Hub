@@ -1,0 +1,106 @@
+<div>
+  <!-- SEARCH PANEL -->
+  <div class="search-panel">
+     <div class="search-header">
+        <div class="icon-box"><i class="fa fa-search fa-lg"></i></div>
+        <div>
+           <h2 class="search-title">Find a Colleague</h2>
+           <p class="search-subtitle">Search for internal experts validated by peers.</p>
+        </div>
+     </div>
+     <div class="row">
+        <div class="col-md-6">
+           <label class="filter-label">Must Have Skills</label>
+           <div class="input-must-have">
+              <sn-record-picker field="c.mustHave" table="'cmn_skill'" 
+                                display-field="'name'" value-field="'sys_id'" 
+                                search-fields="'name'" page-size="100" multiple="true" 
+                                placeholder="Select critical skills...">
+              </sn-record-picker>
+           </div>
+        </div>
+        <div class="col-md-6">
+           <label class="filter-label">Nice to Have Skills</label>
+           <div class="input-nice-have">
+              <sn-record-picker field="c.niceHave" table="'cmn_skill'" 
+                                display-field="'name'" value-field="'sys_id'" 
+                                search-fields="'name'" page-size="100" multiple="true" 
+                                placeholder="Select optional skills...">
+              </sn-record-picker>
+           </div>
+        </div>
+     </div>
+     <div class="search-footer">
+        <div class="toggle-group">
+           <label class="toggle-label">
+              <input type="checkbox" ng-model="c.availableOnly"> Available Only
+           </label>
+           <label class="toggle-label">
+              <input type="checkbox" ng-model="c.sameDept"> Same Department
+           </label>
+        </div>
+        <button class="btn-search" ng-click="c.search()">Search Resources</button>
+     </div>
+  </div>
+  <!-- RESULTS AREA -->
+  <div ng-if="c.searched">
+     <div class="results-bar">
+        <div class="results-count">{{c.results.length}} Experts Found</div>
+        <div class="view-toggles">
+           <button class="view-btn" ng-class="{'active': c.viewMode == 'grid'}" ng-click="c.viewMode = 'grid'"><i class="fa fa-th"></i></button>
+           <button class="view-btn" ng-class="{'active': c.viewMode == 'list'}" ng-click="c.viewMode = 'list'"><i class="fa fa-list"></i></button>
+        </div>
+     </div>
+     <div ng-if="c.loading" class="text-center text-muted" style="padding:40px;">
+        <i class="fa fa-circle-o-notch fa-spin fa-2x"></i><br>Calculating matches...
+     </div>
+     <!-- GRID VIEW -->
+     <div class="grid-container" ng-if="!c.loading && c.viewMode == 'grid'">
+        <div class="grid-item" ng-repeat="r in c.results">
+           <div class="expert-card">
+              <div class="avatar-wrapper">
+                 <div class="avatar-circle">{{r.initials}}</div>
+                 <!-- Removed hardcoded dot logic for now, defaulting to high until integration -->
+                 <div class="availability-dot" ng-class="'dot-' + r.availability"></div>
+              </div>
+              <h4 class="expert-name">{{r.name}}</h4>
+              <p class="expert-title">{{r.title}}</p>
+              <div class="skill-tags">
+                 <span class="skill-tag" ng-repeat="s in r.skills | limitTo:4" ng-class="{'match': s.matched}">{{s.name}}</span>
+                 <span class="skill-tag" ng-if="r.skills.length > 4">+{{r.skills.length - 4}}</span>
+              </div>
+              <div class="card-footer">
+                 <div>
+                    <div class="match-score" ng-class="c.getScoreClass(r.matchScore)">{{r.matchScore}}%</div>
+                    <div class="match-label">Match Score</div>
+                 </div>
+                 <button class="btn btn-default btn-xs" ng-click="c.endorse(r)">Endorse</button>
+              </div>
+           </div>
+        </div>
+     </div>
+     <!-- LIST VIEW -->
+     <div class="list-container" ng-if="!c.loading && c.viewMode == 'list'">
+        <div class="list-card" ng-repeat="r in c.results">
+           <div class="avatar-wrapper" style="margin-bottom:0;">
+              <div class="avatar-circle">{{r.initials}}</div>
+              <div class="availability-dot" ng-class="'dot-' + r.availability"></div>
+           </div>
+           <div class="list-info">
+              <h4 class="expert-name">{{r.name}}</h4>
+              <p class="expert-title">{{r.title}}</p>
+              <div class="skill-tags" style="margin-bottom:0;">
+                 <span class="skill-tag" ng-repeat="s in r.skills" ng-class="{'match': s.matched}">{{s.name}}</span>
+              </div>
+           </div>
+           <div class="list-actions">
+              <div class="text-center">
+                 <div class="match-score" style="font-size:18px;" ng-class="c.getScoreClass(r.matchScore)">{{r.matchScore}}%</div>
+                 <div class="match-label">Match</div>
+              </div>
+              <button class="btn btn-default" ng-click="c.endorse(r)"><i class="fa fa-thumbs-up"></i></button>
+           </div>
+        </div>
+     </div>
+  </div>
+</div>

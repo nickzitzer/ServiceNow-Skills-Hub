@@ -1,0 +1,82 @@
+<div class="panel-cc">
+  <!-- HEADER & STATS -->
+  <div class="matrix-header">
+     <div>
+        <h3 class="matrix-title">Team Capability Matrix</h3>
+        <p class="matrix-subtitle">Review, validate, and analyze your direct reports' skills.</p>
+     </div>
+     <div class="stats-group">
+        <div class="stat-card">
+           <span class="stat-val">{{c.stats.reports}}</span>
+           <span class="stat-label">Reports</span>
+        </div>
+        <div class="stat-card">
+           <span class="stat-val text-orange">{{c.stats.pending}}</span>
+           <span class="stat-label">Pending</span>
+        </div>
+        <div class="stat-card">
+           <span class="stat-val text-green">{{c.stats.validated}}</span>
+           <span class="stat-label">Verified</span>
+        </div>
+     </div>
+  </div>
+  <!-- TABLE MATRIX -->
+  <div class="table-container">
+     <table class="table-matrix">
+        <thead>
+           <tr>
+              <th style="width: 250px;">Employee</th>
+              <th>Skills Portfolio</th>
+           </tr>
+        </thead>
+        <tbody>
+           <!-- Empty State -->
+           <tr ng-if="c.noData">
+              <td colspan="2" class="text-center" style="padding: 40px;">
+                 <p class="text-muted">No direct reports found with skills data.</p>
+              </td>
+           </tr>
+           <!-- Data Rows -->
+           <tr ng-repeat="(uid, user) in c.data">
+              <!-- Employee Info -->
+              <td style="border-right: 1px solid #f1f5f9;">
+                 <div class="employee-cell">
+                    <div class="avatar-circle">{{user.initials}}</div>
+                    <div>
+                       <span class="emp-name">{{user.name}}</span>
+                       <span class="emp-title">{{user.title}}</span>
+                    </div>
+                 </div>
+              </td>
+              <!-- Skills Grid -->
+              <td>
+                 <div class="skill-grid">
+                    <div class="skill-pill" 
+                         ng-repeat="(skillName, details) in user.skills"
+                         ng-class="{'status-validated': details.validated, 'status-pending': !details.validated}"
+                         ng-click="c.validate(uid, skillName, details)">
+                       
+                       <!-- Tooltip Hint -->
+                       <div class="action-hint" ng-if="!details.validated">Click to Validate</div>
+                       <div class="action-hint" ng-if="details.validated">Verified by Manager</div>
+                       
+                       <!-- Content -->
+                       <span>{{skillName}}</span>
+                       <span style="font-weight:400; opacity:0.7;">| {{details.level}}</span>
+                       
+                       <!-- Icons -->
+                       <i class="fa fa-check-circle text-check" ng-if="details.validated"></i>
+                       <i class="fa fa-heart text-heart interest-icon" ng-if="details.interest=='high'" title="High Interest"></i>
+                    </div>
+                    
+                    <!-- Empty Skills State -->
+                    <span ng-if="Object.keys(user.skills).length == 0" class="text-muted small" style="padding: 6px 0; font-style:italic;">
+                       No skills recorded.
+                    </span>
+                 </div>
+              </td>
+           </tr>
+        </tbody>
+     </table>
+  </div>
+</div>

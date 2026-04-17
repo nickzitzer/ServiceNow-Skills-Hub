@@ -1,0 +1,167 @@
+<div class="row">
+  <!-- LEFT SIDEBAR -->
+  <div class="col-md-4">
+     <!-- Profile Card -->
+     <div class="profile-card">
+        <div class="profile-header-bg"></div>
+        <div class="profile-content">
+           <div class="profile-avatar-container">
+              <div class="profile-avatar">
+                 <sn-avatar primary="c.data.user_id" show-presence="false" class="avatar-large"></sn-avatar>
+              </div>
+           </div>
+           <div class="profile-name">{{c.data.user_name}}</div>
+           <div class="profile-meta">{{c.data.user_title}} &bull; {{c.data.user_dept}}</div>
+           <div class="profile-badges">
+              <span class="badge-pill badge-expert"><i class="fa fa-star"></i> Expert</span>
+              <span class="badge-pill badge-verified"><i class="fa fa-check-circle"></i> Verified</span>
+           </div>
+           <div class="profile-stats">
+              <div class="stat-item">
+                 <div class="stat-value">{{c.data.stats.total_skills}}</div>
+                 <div class="stat-label">Skills</div>
+              </div>
+              <div class="stat-item">
+                 <div class="stat-value">{{c.data.stats.total_validations}}</div>
+                 <div class="stat-label">Endorsements</div>
+              </div>
+           </div>
+        </div>
+     </div>
+     <!-- Tier Card (replaces Gamification Card) -->
+     <div class="tier-card" ng-style="{'border-left-color': c.data.tier.color}">
+        <div class="tier-icon-bg">
+           <i class="fa" ng-class="c.data.tier.icon" ng-style="{color: c.data.tier.color}"></i>
+        </div>
+        <div class="tier-badge" ng-style="{background: c.data.tier.color}">
+           <i class="fa" ng-class="c.data.tier.icon"></i>
+           {{c.data.tier.name}}
+        </div>
+        <div class="tier-points">{{c.data.tier.points}} <span style="font-size:12px; font-weight:500; color:#64748b;">points</span></div>
+        <div class="tier-tagline">{{c.data.tier.tagline}}</div>
+        <div class="tier-progress-section" ng-if="c.data.tier.next_tier">
+           <div class="tier-progress-labels">
+              <span>{{c.data.tier.name}}</span>
+              <span>{{c.data.tier.next_tier}} ({{c.data.tier.next_tier_min}} pts)</span>
+           </div>
+           <div class="tier-progress-track">
+              <div class="tier-progress-fill" ng-style="{width: c.data.tier.progress_percent + '%', background: c.data.tier.color}"></div>
+           </div>
+           <div class="tier-progress-hint">
+              {{c.data.tier.points_to_next}} points to <strong>{{c.data.tier.next_tier}}</strong>
+           </div>
+        </div>
+        <div class="tier-progress-section" ng-if="!c.data.tier.next_tier">
+           <div class="tier-max-badge">
+              <i class="fa fa-crown" style="color:#f59e0b;"></i> Maximum Tier Reached!
+           </div>
+        </div>
+     </div>
+  </div>
+  <!-- RIGHT CONTENT -->
+  <div class="col-md-8">
+     <div class="section-header">
+        <div>
+           <h2 class="section-title">My Competencies</h2>
+           <p class="section-subtitle">Manage your expertise and interests.</p>
+        </div>
+        <button class="btn-add" ng-click="c.openAddModal()">
+           <i class="fa fa-plus"></i> Add Skill
+        </button>
+     </div>
+     <!-- Empty State -->
+     <div class="text-center" ng-if="data.skills.length == 0">
+        <div class="well">
+           <p class="text-muted">You have not added any skills yet.</p>
+           <button class="btn btn-default btn-sm" ng-click="c.openAddModal()">Add Your First Skill</button>
+        </div>
+     </div>
+     <!-- Card Grid -->
+     <div class="row-grid" ng-if="data.skills.length > 0">
+        <!-- Skill Card Repeater -->
+        <div class="col-md-6 col-grid" ng-repeat="skill in data.skills">
+           <div class="skill-card">
+              <!-- Interest Stripe -->
+              <div class="interest-stripe" ng-if="skill.interest == 'high'"></div>
+              <!-- Validation Badge -->
+              <div class="validation-badge validated" ng-if="skill.validation_status == 'validated'" title="Manager Validated">
+                 <i class="fa fa-check-circle"></i>
+              </div>
+              <div class="validation-badge disputed" ng-if="skill.validation_status == 'disputed'" title="Disputed by Manager">
+                 <i class="fa fa-exclamation-triangle"></i>
+              </div>
+
+              <div class="card-header-row">
+                 <div>
+                    <div class="skill-name">{{skill.name}}</div>
+                    <div class="skill-type">{{skill.category}}</div>
+                 </div>
+                 <i class="fa fa-ellipsis-h btn-more" ng-click="c.removeSkill(skill)" title="Remove"></i>
+              </div>
+
+              <!-- Proficiency Bar -->
+              <div style="margin-bottom: 10px;">
+                 <div class="prof-label-row">
+                    <span>Proficiency</span>
+                    <span>{{skill.level_value * 20}}%</span>
+                 </div>
+                 <div class="interactive-bar-bg" ng-click="c.setProficiency(skill, $event)">
+                    <div class="interactive-bar-fill"
+                         ng-class="{'bar-blue': skill.level_value >= 4, 'bar-gray': skill.level_value < 4}"
+                         ng-style="{width: (skill.level_value * 20) + '%'}"></div>
+                    <!-- Invisible segments for clicking -->
+                    <div class="hover-segments">
+                       <div class="segment-hit" ng-click="c.updateProficiency(skill, 1); $event.stopPropagation();" title="Novice"></div>
+                       <div class="segment-hit" ng-click="c.updateProficiency(skill, 2); $event.stopPropagation();" title="Learner"></div>
+                       <div class="segment-hit" ng-click="c.updateProficiency(skill, 3); $event.stopPropagation();" title="Proficient"></div>
+                       <div class="segment-hit" ng-click="c.updateProficiency(skill, 4); $event.stopPropagation();" title="Advanced"></div>
+                       <div class="segment-hit" ng-click="c.updateProficiency(skill, 5); $event.stopPropagation();" title="Expert"></div>
+                    </div>
+                 </div>
+              </div>
+
+              <!-- Footer -->
+              <div class="card-footer-row">
+                 <div class="endorsement-pill" ng-class="{'active': skill.endorsements > 0}">
+                    <i class="fa fa-thumbs-up"></i> {{skill.endorsements}}
+                 </div>
+                 <div class="interest-pill"
+                      ng-class="{'inactive': skill.interest != 'high'}"
+                      ng-click="c.toggleInterest(skill)">
+                    <i class="fa fa-chart-line"></i> {{skill.interest == 'high' ? 'High Interest' : 'Set Interest'}}
+                 </div>
+              </div>
+           </div>
+        </div>
+
+        <!-- Add New Placeholder Card -->
+        <div class="col-md-6 col-grid">
+           <div class="add-card-placeholder" ng-click="c.openAddModal()">
+              <div class="add-icon-circle"><i class="fa fa-plus"></i></div>
+              <div style="font-weight:600;">Add New Skill</div>
+           </div>
+        </div>
+     </div>
+  </div>
+</div><!-- Embedded Modal Template -->
+<script type="text/ng-template" id="addSkillModal.html">
+   <div class="modal-header">
+       <h4 class="modal-title">Add New Skill</h4>
+   </div>
+   <div class="modal-body">
+       <div class="form-group">
+           <label>Search Skills Database</label>
+           <sn-record-picker field="newSkill" table="'cmn_skill'"
+                             display-field="'name'" value-field="'sys_id'"
+                             search-fields="'name'" page-size="100" >
+           </sn-record-picker>
+       </div>
+       <div class="alert alert-info small">
+           <i class="fa fa-info-circle"></i> Can't find a skill? <a href="?id=sc_cat_item&sys_id=REQUEST_NEW_SKILL_ID">Request it here.</a>
+       </div>
+   </div>
+   <div class="modal-footer">
+       <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+       <button class="btn btn-primary" ng-click="save()" ng-disabled="!newSkill.value">Add Skill</button>
+   </div>
+</script>
