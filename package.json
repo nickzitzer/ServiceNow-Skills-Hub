@@ -1,7 +1,7 @@
 {
   "name": "servicenow-skills-hub",
   "version": "1.0.0",
-  "description": "> AI-Assisted ServiceNow Development Framework for GitHub Copilot",
+  "description": "Cleveland Clinic ServiceNow Skills Hub — skills management, peer endorsement, manager validation, gamification, and workforce analytics on ServiceNow Service Portal.",
   "main": "index.js",
   "directories": {
     "doc": "docs"
