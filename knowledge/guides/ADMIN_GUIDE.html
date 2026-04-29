@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>ADMIN GUIDE</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">ADMIN GUIDE</h1>
+</header>
+<h1 id="skills-hub---administrator-guide">Skills Hub - Administrator
+Guide</h1>
+<p><strong>Audience:</strong> Skills Hub administrators, ServiceNow
+administrators, and support teams. <strong>Last updated:</strong>
+2026-04-29</p>
+<h2 id="overview">Overview</h2>
+<p>Skills Hub is a ServiceNow Service Portal experience that extends the
+out-of-box skill tables with employee profiles, skill discovery,
+endorsements, manager review, skill requests, and a searchable Skill
+Library.</p>
+<p>Administrators are responsible for maintaining the skill library,
+supporting the request process, monitoring data quality, and
+troubleshooting portal behavior.</p>
+<h2 id="key-tables">Key Tables</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Table</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cmn_skill</code></td>
+<td>Out-of-box skill library. Skills Hub uses this as the source of
+skills.</td>
+</tr>
+<tr>
+<td><code>cmn_skill_category</code></td>
+<td>Out-of-box skill categories.</td>
+</tr>
+<tr>
+<td><code>cmn_skill_level_type</code></td>
+<td>Out-of-box grouping for skill rating scales.</td>
+</tr>
+<tr>
+<td><code>cmn_skill_level</code></td>
+<td>Out-of-box rating levels under a level type.</td>
+</tr>
+<tr>
+<td><code>sys_user_has_skill</code></td>
+<td>Out-of-box user skill profile records. Extended with review
+fields.</td>
+</tr>
+<tr>
+<td><code>u_m2m_skill_endorsement</code></td>
+<td>Peer endorsements for user skill records.</td>
+</tr>
+<tr>
+<td><code>u_skill_request</code></td>
+<td>Requested skills submitted through the catalog flow.</td>
+</tr>
+<tr>
+<td><code>u_skill_profile_requirement</code></td>
+<td>Optional role/profile skill requirements.</td>
+</tr>
+<tr>
+<td><code>u_story_skill_assignment</code></td>
+<td>Optional demand and story skill tagging data.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="roles">Roles</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Role</th>
+<th>Typical audience</th>
+<th>Capabilities</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>skill_user</code></td>
+<td>Employees</td>
+<td>View and maintain own skills, use Find Experts, add skills, create
+endorsements.</td>
+</tr>
+<tr>
+<td><code>skill_manager</code></td>
+<td>Managers</td>
+<td>Review direct report skills when manager controls are enabled.</td>
+</tr>
+<tr>
+<td><code>skill_admin</code></td>
+<td>Skill catalog owners</td>
+<td>Review requested skills and maintain skill records.</td>
+</tr>
+<tr>
+<td><code>admin</code></td>
+<td>Platform admins</td>
+<td>Full platform administration and troubleshooting.</td>
+</tr>
+</tbody>
+</table>
+<p>The Team Review tab appears based on direct reports in the
+<code>sys_user.manager</code> field. Role configuration may still be
+used for write access and administrative functions.</p>
+<h2 id="skill-library-administration">Skill Library Administration</h2>
+<p>Skills Hub uses <code>cmn_skill</code> as the library of available
+skills.</p>
+<h3 id="creating-or-updating-skills">Creating or Updating Skills</h3>
+<ol type="1">
+<li>Navigate to <code>cmn_skill.list</code>.</li>
+<li>Create or open a skill record.</li>
+<li>Maintain the skill name and description.</li>
+<li>Set <code>active</code> appropriately, if available.</li>
+<li>Set <code>level_type</code> to the correct
+<code>cmn_skill_level_type</code>.</li>
+<li>Link the skill to categories through the available category
+relationship.</li>
+</ol>
+<h3 id="rating-scale-setup">Rating Scale Setup</h3>
+<p>Each skill can reference a level type. The user interface reads child
+levels from <code>cmn_skill_level</code> and uses the numeric
+<code>value</code> field for scoring and ordering.</p>
+<p>Verify:</p>
+<ul>
+<li><code>cmn_skill.level_type</code> is populated for skills that need
+a specific rating scale.</li>
+<li><code>cmn_skill_level.skill_level_type</code> or equivalent type
+reference points to the level type.</li>
+<li><code>cmn_skill_level.value</code> is populated consistently.</li>
+<li>Level names and descriptions match the intended rating model.</li>
+</ul>
+<h2 id="skill-request-administration">Skill Request Administration</h2>
+<p>Employees can request a missing skill through the Request New Skill
+catalog item.</p>
+<p>The request form should collect:</p>
+<ul>
+<li>Skill name</li>
+<li>Category</li>
+<li>Description</li>
+</ul>
+<p>The description should help administrators understand what the skill
+means. It should not be framed as a personal business justification.</p>
+<h3 id="reviewing-requests">Reviewing Requests</h3>
+<ol type="1">
+<li>Open the submitted request or related <code>u_skill_request</code>
+record.</li>
+<li>Check whether the requested skill already exists.</li>
+<li>Confirm the best category and naming convention.</li>
+<li>Create or update the <code>cmn_skill</code> record as
+appropriate.</li>
+<li>Communicate the outcome through the configured request process.</li>
+</ol>
+<p>If approval workflow is not enabled in the target deployment, use the
+organization’s standard request fulfillment process to close the
+loop.</p>
+<h2 id="manager-review-administration">Manager Review
+Administration</h2>
+<p>Manager review state is stored on
+<code>sys_user_has_skill</code>.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Field</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>u_validation_status</code></td>
+<td><code>pending</code>, <code>validated</code>, <code>disputed</code>,
+or <code>expired</code>.</td>
+</tr>
+<tr>
+<td><code>u_validation_notes</code></td>
+<td>Manager dispute or review notes.</td>
+</tr>
+<tr>
+<td><code>u_manager_assessed_level</code></td>
+<td>Manager-suggested level.</td>
+</tr>
+<tr>
+<td><code>u_last_manager_validation</code></td>
+<td>Timestamp of latest manager validation or review.</td>
+</tr>
+</tbody>
+</table>
+<p>The Team Review UI depends on these fields for status filters,
+dispute indicators, and review modals.</p>
+<h2 id="endorsement-administration">Endorsement Administration</h2>
+<p>Endorsements are stored in <code>u_m2m_skill_endorsement</code>.</p>
+<p>Expected safeguards:</p>
+<ul>
+<li>Users cannot endorse their own skill.</li>
+<li>Duplicate endorsements for the same skill record and endorser are
+blocked.</li>
+<li>Endorsement counts are maintained on the related
+<code>sys_user_has_skill</code> record.</li>
+</ul>
+<p>If counts appear incorrect, recalculate from
+<code>u_m2m_skill_endorsement</code> for the affected skill record.</p>
+<h2 id="portal-widgets">Portal Widgets</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Widget ID</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>skills-hub-container</code></td>
+<td>Main tab container for Skills Hub.</td>
+</tr>
+<tr>
+<td><code>skills-hub-profile</code></td>
+<td>My Skills profile management.</td>
+</tr>
+<tr>
+<td><code>skills-hub-find</code></td>
+<td>Find Experts search and endorsement flow.</td>
+</tr>
+<tr>
+<td><code>skills-hub-library</code></td>
+<td>Skill Library search, category filter, pagination, and add
+action.</td>
+</tr>
+<tr>
+<td><code>skills-hub-matrix</code></td>
+<td>Team Review manager matrix.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="accessibility-and-ux-administration">Accessibility and UX
+Administration</h2>
+<p>The current portal includes accessibility-oriented updates:</p>
+<ul>
+<li>Descriptive button names for search, clear, add, and status
+actions.</li>
+<li>Keyboard focus outlines on interactive controls.</li>
+<li>Table captions and scoped column headers in Skill Library.</li>
+<li>Visible labels for filters and lookup controls.</li>
+<li>Compact table layouts for large skill lists.</li>
+</ul>
+<p>These updates support 508 and ADA readiness, but they do not replace
+a formal accessibility audit. Before production release, test with
+keyboard-only navigation and the organization’s approved screen
+reader/browser combinations.</p>
+<h2 id="common-support-scenarios">Common Support Scenarios</h2>
+<h3 id="team-review-tab-does-not-show">Team Review tab does not
+show</h3>
+<ul>
+<li>Confirm the user has active direct reports.</li>
+<li>Check the <code>manager</code> field on direct report
+<code>sys_user</code> records.</li>
+<li>Confirm the portal page has the latest container widget
+version.</li>
+</ul>
+<h3 id="skill-levels-show-unexpected-labels">Skill levels show
+unexpected labels</h3>
+<ul>
+<li>Check the skill’s <code>level_type</code>.</li>
+<li>Check related <code>cmn_skill_level</code> records.</li>
+<li>Confirm the <code>value</code> field is populated and ordered
+correctly.</li>
+</ul>
+<h3 id="skill-library-add-button-says-added">Skill Library Add button
+says Added</h3>
+<p>The current user already has a <code>sys_user_has_skill</code> record
+for that skill.</p>
+<h3 id="category-picker-or-clear-button-layout-looks-wrong">Category
+picker or clear button layout looks wrong</h3>
+<p>Confirm the toolbar repair script has been applied:</p>
+<ul>
+<li><code>82_repair_skill_library_toolbar_layout.js</code></li>
+<li><code>83_verify_skill_library_toolbar_layout.js</code></li>
+</ul>
+<h3 id="request-form-language-is-wrong">Request form language is
+wrong</h3>
+<p>Confirm the request cleanup scripts were applied and that the form
+uses “description” language instead of “business justification”
+language.</p>
+<h3 id="manager-filters-do-not-match-counts">Manager filters do not
+match counts</h3>
+<p>Confirm the manager filter repair scripts were applied:</p>
+<ul>
+<li><code>74_repair_manager_review_filter.js</code></li>
+<li><code>75_verify_manager_review_filter.js</code></li>
+</ul>
+<h2 id="verification-scripts">Verification Scripts</h2>
+<p>Use the numbered verification scripts after applying implementation
+scripts. Recent stabilization scripts include:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Scripts</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>66</code>-<code>73</code></td>
+<td>Profile search, category picker, and add-skill focus behavior.</td>
+</tr>
+<tr>
+<td><code>74</code>-<code>75</code></td>
+<td>Team Review filter repair.</td>
+</tr>
+<tr>
+<td><code>76</code>-<code>79</code></td>
+<td>Skill Library tab, verification, and table density polish.</td>
+</tr>
+<tr>
+<td><code>80</code>-<code>83</code></td>
+<td>Skill Library UX/accessibility polish and toolbar layout
+repair.</td>
+</tr>
+</tbody>
+</table>
+<p>Verification scripts are designed to be read-only.</p>
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>END USER GUIDE</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">END USER GUIDE</h1>
+</header>
+<h1 id="skills-hub---user-guide">Skills Hub - User Guide</h1>
+<p><strong>Audience:</strong> Employees using Skills Hub to manage
+skills, find experts, and request missing skills. <strong>Last
+updated:</strong> 2026-04-29</p>
+<h2 id="overview">Overview</h2>
+<p>Skills Hub is the ServiceNow portal experience for managing
+professional skills across the organization. It helps employees maintain
+a current skills profile, discover colleagues with relevant expertise,
+request missing skills for the library, and view endorsements or manager
+review status.</p>
+<p>Access Skills Hub from the ServiceNow portal page:</p>
+<pre class="text"><code>/sp?id=skills_hub</code></pre>
+<h2 id="navigation">Navigation</h2>
+<p>Skills Hub uses four main tabs.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Tab</th>
+<th>Who sees it</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>My Skills</td>
+<td>All users</td>
+<td>Manage your own skills, levels, interests, endorsements, and review
+status.</td>
+</tr>
+<tr>
+<td>Find Experts</td>
+<td>All users</td>
+<td>Search for colleagues by skill, department, business unit, and
+related filters.</td>
+</tr>
+<tr>
+<td>Skill Library</td>
+<td>All users</td>
+<td>Browse the complete skill library and quickly add skills to your
+profile.</td>
+</tr>
+<tr>
+<td>Team Review</td>
+<td>Managers with direct reports</td>
+<td>Review, validate, or dispute team skill assessments.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="my-skills">My Skills</h2>
+<p>The My Skills tab is your personal skills profile. It shows your
+skills, skill level, interest level, endorsements, and manager review
+status.</p>
+<h3 id="skill-cards-and-list-view">Skill Cards and List View</h3>
+<p>Skills may be shown as cards or in a compact list view. The list view
+is intended for users with many skills and makes it easier to scan large
+profiles.</p>
+<p>Each skill entry can show:</p>
+<ul>
+<li>Skill name</li>
+<li>Category or category path</li>
+<li>Current skill level</li>
+<li>Interest level</li>
+<li>Endorsement count</li>
+<li>Manager review or dispute status</li>
+<li>Stale assessment indicators when a skill has not been assessed
+recently</li>
+</ul>
+<h3 id="skill-levels">Skill Levels</h3>
+<p>Skills Hub uses the ServiceNow skill rating model configured for each
+skill. Each skill can have a level type, and the available levels come
+from the related <code>cmn_skill_level</code> records. This means the
+labels may vary based on the skill’s rating scale instead of always
+using one global five-point label set.</p>
+<p>When you update a skill level, choose the level that best reflects
+your current experience.</p>
+<h3 id="interest-level">Interest Level</h3>
+<p>Interest level tells the organization whether you want to use or grow
+a skill. It is separate from proficiency.</p>
+<p>Use interest to signal:</p>
+<ul>
+<li>Skills you want to use more often</li>
+<li>Skills you can support but do not want as a primary focus</li>
+<li>Skills you are developing</li>
+</ul>
+<h3 id="endorsements">Endorsements</h3>
+<p>Endorsements show that colleagues recognize your experience with a
+skill. You can view endorsement details to see who endorsed a skill.
+Endorsement details include the endorser’s name, role, and department
+when those values are available.</p>
+<p>You cannot endorse your own skills, and duplicate endorsements for
+the same person’s skill are blocked.</p>
+<h3 id="manager-review-status">Manager Review Status</h3>
+<p>Managers can review skills for their direct reports. A skill may
+show:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pending</td>
+<td>The skill has not yet been validated by a manager.</td>
+</tr>
+<tr>
+<td>Validated</td>
+<td>The manager confirmed the skill assessment.</td>
+</tr>
+<tr>
+<td>Disputed</td>
+<td>The manager suggested a different level or left review notes.</td>
+</tr>
+<tr>
+<td>Expired</td>
+<td>The previous validation is stale and should be reviewed again.</td>
+</tr>
+</tbody>
+</table>
+<p>If a manager disputes a skill, review the suggested level and notes.
+The dispute is meant to close the loop through conversation, correction,
+or re-validation.</p>
+<h2 id="adding-skills">Adding Skills</h2>
+<p>You can add skills in two ways.</p>
+<h3 id="add-from-my-skills">Add From My Skills</h3>
+<ol type="1">
+<li>Open <strong>My Skills</strong>.</li>
+<li>Select <strong>Add Skill</strong>.</li>
+<li>Search for the skill name.</li>
+<li>Select the skill.</li>
+<li>Choose the appropriate level and interest details.</li>
+<li>Save the skill to your profile.</li>
+</ol>
+<p>The skill picker opens suggestions as you focus and type, similar to
+other ServiceNow lookup experiences.</p>
+<h3 id="add-from-skill-library">Add From Skill Library</h3>
+<ol type="1">
+<li>Open <strong>Skill Library</strong>.</li>
+<li>Search or filter by category.</li>
+<li>Review the results table.</li>
+<li>Select <strong>Add</strong> next to the skill.</li>
+</ol>
+<p>If a skill is already on your profile, the action shows
+<strong>Added</strong> and is disabled.</p>
+<h2 id="requesting-a-missing-skill">Requesting a Missing Skill</h2>
+<p>If the skill you need does not exist, use the request flow.</p>
+<ol type="1">
+<li>From the Add Skill experience, select <strong>Request it
+here</strong>, or open the <strong>Request New Skill</strong> catalog
+item.</li>
+<li>Enter the skill name.</li>
+<li>Select the best category.</li>
+<li>Provide a description that helps administrators understand the
+skill.</li>
+<li>Submit the request.</li>
+</ol>
+<p>The description should explain what the skill means in business
+terms. It is not a business justification for why you personally need
+it.</p>
+<h2 id="find-experts">Find Experts</h2>
+<p>Use Find Experts to locate colleagues with relevant skills.</p>
+<ol type="1">
+<li>Open <strong>Find Experts</strong>.</li>
+<li>Search for a skill.</li>
+<li>Use filters such as department, business unit, group hierarchy, or
+interest level when available.</li>
+<li>Review each expert card for name, role, department, skill level,
+interest, and endorsement context.</li>
+</ol>
+<p>Use this view when staffing work, finding a peer reviewer,
+identifying a backup, or locating someone who has experience with a
+specific platform or process.</p>
+<h2 id="skill-library">Skill Library</h2>
+<p>The Skill Library is the fastest way to browse and add skills.</p>
+<p>The library supports:</p>
+<ul>
+<li>Keyword search</li>
+<li>Category filtering</li>
+<li>Pagination</li>
+<li>Status badges showing whether a skill is already on your
+profile</li>
+<li>Direct add actions</li>
+</ul>
+<p>The table is designed for scanning. Long descriptions are shortened
+in the table so the list remains usable.</p>
+<h2 id="accessibility-notes">Accessibility Notes</h2>
+<p>Skills Hub has been updated with accessibility improvements including
+descriptive button labels, keyboard focus styling, table captions,
+scoped table headers, and clearer status labels. This does not replace a
+formal 508 or ADA compliance review, but the portal experience is
+designed to support keyboard and screen reader use.</p>
+<h2 id="faq">FAQ</h2>
+<p><strong>Why do some skill levels have different names?</strong> Skill
+levels come from the rating scale assigned to the skill. Different
+skills may use different level labels.</p>
+<p><strong>Why is a skill marked Added in the Skill Library?</strong>
+That skill is already on your profile.</p>
+<p><strong>What should I write in a new skill request
+description?</strong> Describe what the skill is and how someone would
+recognize it. Do not write a personal justification.</p>
+<p><strong>What does Disputed mean?</strong> Your manager suggested a
+different assessment or left notes. Use it as a prompt for follow-up and
+alignment.</p>
+<p><strong>Can I remove a skill?</strong> Yes, use the remove action on
+the skill in My Skills, if enabled for your role and record.</p>
+</body>
+</html>

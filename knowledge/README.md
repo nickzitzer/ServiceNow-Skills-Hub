@@ -34,6 +34,8 @@ Current finalized Skills Hub guides:
 - `guides/DEPLOYMENT_GUIDE.md`
 - `guides/REGRESSION_TESTING_PLAYBOOK.md`
 
+The finalized executive, user, manager, admin, and technical design guides are also generated as `.docx` and `.html` files for distribution.
+
 ### `/kb-articles/`
 ServiceNow Knowledge Base articles:
 - Draft articles (markdown)

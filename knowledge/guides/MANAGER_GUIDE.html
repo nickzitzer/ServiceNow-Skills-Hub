@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>MANAGER GUIDE</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">MANAGER GUIDE</h1>
+</header>
+<h1 id="skills-hub---manager-guide">Skills Hub - Manager Guide</h1>
+<p><strong>Audience:</strong> Managers reviewing skills for direct
+reports. <strong>Last updated:</strong> 2026-04-29</p>
+<h2 id="overview">Overview</h2>
+<p>Managers use Skills Hub to review team skills, validate accurate
+assessments, and identify skills that need follow-up. The manager
+experience appears as the <strong>Team Review</strong> tab for users
+with direct reports in ServiceNow.</p>
+<p>Managers can still use the employee features: My Skills, Find
+Experts, and Skill Library.</p>
+<h2 id="accessing-team-review">Accessing Team Review</h2>
+<ol type="1">
+<li><p>Open Skills Hub:</p>
+<pre class="text"><code>/sp?id=skills_hub</code></pre></li>
+<li><p>Select <strong>Team Review</strong>.</p></li>
+</ol>
+<p>If the tab does not appear, confirm that the employee records have
+your user set in the <code>manager</code> field.</p>
+<h2 id="team-review-layout">Team Review Layout</h2>
+<p>Team Review shows direct reports and their skills in a compact review
+matrix. The view is optimized for scanning status and taking action.</p>
+<p>Each skill row or chip can include:</p>
+<ul>
+<li>Employee name</li>
+<li>Skill name</li>
+<li>Employee-assessed level</li>
+<li>Manager-suggested level, when available</li>
+<li>Validation status</li>
+<li>Endorsement count</li>
+<li>Last review date</li>
+<li>Dispute or review notes</li>
+</ul>
+<h2 id="filters">Filters</h2>
+<p>Use the Team Review filters to focus the list.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Filter</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reports</td>
+<td>Show all direct report skill rows.</td>
+</tr>
+<tr>
+<td>Pending</td>
+<td>Show skills waiting for manager review.</td>
+</tr>
+<tr>
+<td>Verified or Validated</td>
+<td>Show skills already confirmed.</td>
+</tr>
+<tr>
+<td>Disputed</td>
+<td>Show skills where a manager suggested a different level or left
+notes.</td>
+</tr>
+<tr>
+<td>Review</td>
+<td>Show skills needing review attention, depending on the configured
+status count.</td>
+</tr>
+</tbody>
+</table>
+<p>The filters should update the matrix without showing blank filler
+rows.</p>
+<h2 id="validating-skills">Validating Skills</h2>
+<p>Validate a skill when you agree with the employee’s assessment.</p>
+<ol type="1">
+<li>Find the employee and skill in Team Review.</li>
+<li>Open the skill review action.</li>
+<li>Confirm the level.</li>
+<li>Select <strong>Validate</strong>.</li>
+</ol>
+<p>Validation updates the skill record and stamps the latest manager
+validation timestamp.</p>
+<h2 id="disputing-a-skill">Disputing a Skill</h2>
+<p>Dispute a skill when the employee assessment needs follow-up.</p>
+<ol type="1">
+<li>Open the skill review action.</li>
+<li>Select the manager-suggested level.</li>
+<li>Add review notes.</li>
+<li>Submit the dispute.</li>
+</ol>
+<p>The dispute state is stored on the employee skill record:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Field</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>u_validation_status</code></td>
+<td>Stores the dispute or validation state.</td>
+</tr>
+<tr>
+<td><code>u_validation_notes</code></td>
+<td>Stores manager notes and review context.</td>
+</tr>
+<tr>
+<td><code>u_manager_assessed_level</code></td>
+<td>Stores the manager-suggested level.</td>
+</tr>
+<tr>
+<td><code>u_last_manager_validation</code></td>
+<td>Stores the validation or review timestamp.</td>
+</tr>
+</tbody>
+</table>
+<p>Disputes are not intended to be punitive. They are a way to close the
+loop when a skill level needs conversation or correction.</p>
+<h2 id="reviewing-dispute-details">Reviewing Dispute Details</h2>
+<p>Disputed skills show a compact status indicator. Select the status
+indicator to view the dispute details modal. The modal shows the
+employee, skill, status, suggested level, and notes.</p>
+<h2 id="best-practices">Best Practices</h2>
+<ul>
+<li>Review pending skills during regular one-on-ones.</li>
+<li>Use dispute notes to explain the specific gap or evidence
+needed.</li>
+<li>Re-validate after discussion when the level is aligned.</li>
+<li>Use Find Experts to compare skills across the broader
+organization.</li>
+<li>Use Skill Library to understand how skills are categorized before
+asking employees to add missing skills.</li>
+</ul>
+<h2 id="faq">FAQ</h2>
+<p><strong>Can I review users outside my direct reporting line?</strong>
+No. Manager actions are restricted to direct reports, unless you have an
+administrator role.</p>
+<p><strong>What happens when I dispute a skill?</strong> The employee
+skill record is marked disputed and stores your suggested level and
+notes.</p>
+<p><strong>Can I change a disputed skill later?</strong> Yes. After
+discussion, validate the skill at the agreed level or update the
+assessment as appropriate.</p>
+<p><strong>Why do level names vary?</strong> Skills use the level scale
+configured on the skill’s <code>cmn_skill.level_type</code>, so labels
+may differ across skills.</p>
+</body>
+</html>
