@@ -25,6 +25,15 @@ User and admin documentation:
 - Technical references
 - Troubleshooting guides
 
+Current finalized Skills Hub guides:
+- `guides/EXECUTIVE_OVERVIEW.md`
+- `guides/END_USER_GUIDE.md`
+- `guides/MANAGER_GUIDE.md`
+- `guides/ADMIN_GUIDE.md`
+- `guides/TECHNICAL_DESIGN.md`
+- `guides/DEPLOYMENT_GUIDE.md`
+- `guides/REGRESSION_TESTING_PLAYBOOK.md`
+
 ### `/kb-articles/`
 ServiceNow Knowledge Base articles:
 - Draft articles (markdown)

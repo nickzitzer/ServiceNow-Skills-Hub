@@ -1,177 +1,160 @@
-# Skills Hub - End User Guide
+# Skills Hub - User Guide
 
-## What is Skills Hub?
+**Audience:** Employees using Skills Hub to manage skills, find experts, and request missing skills.
+**Last updated:** 2026-04-29
 
-Skills Hub is your centralized place to manage your professional skills, discover experts across the organization, and earn recognition for your expertise. Access it from the ServiceNow portal at **?id=skills_hub** or from the **Skills Hub** menu in the left navigation.
+## Overview
 
----
+Skills Hub is the ServiceNow portal experience for managing professional skills across the organization. It helps employees maintain a current skills profile, discover colleagues with relevant expertise, request missing skills for the library, and view endorsements or manager review status.
 
-## Getting Started
+Access Skills Hub from the ServiceNow portal page:
 
-### Accessing Skills Hub
+```text
+/sp?id=skills_hub
+```
 
-1. Log in to ServiceNow
-2. Navigate to **Skills Hub** in the left navigation, or go directly to the portal page: `?id=skills_hub`
-3. You will land on the **My Portfolio** tab
+## Navigation
 
-### Navigation
+Skills Hub uses four main tabs.
 
-The Skills Hub has three tabs available to all employees (plus a fourth for managers):
+| Tab | Who sees it | Purpose |
+| --- | --- | --- |
+| My Skills | All users | Manage your own skills, levels, interests, endorsements, and review status. |
+| Find Experts | All users | Search for colleagues by skill, department, business unit, and related filters. |
+| Skill Library | All users | Browse the complete skill library and quickly add skills to your profile. |
+| Team Review | Managers with direct reports | Review, validate, or dispute team skill assessments. |
 
-| Tab | Purpose |
-|-----|---------|
-| **My Portfolio** | View and manage your skills, see your tier and points |
-| **Find an Expert** | Search for colleagues by skill name |
-| **Leaderboard** | See how you rank against your department |
-| **Manager View** | *(Managers only)* Review and validate team skills |
+## My Skills
 
----
+The My Skills tab is your personal skills profile. It shows your skills, skill level, interest level, endorsements, and manager review status.
 
-## My Portfolio
+### Skill Cards and List View
 
-### Viewing Your Skills
+Skills may be shown as cards or in a compact list view. The list view is intended for users with many skills and makes it easier to scan large profiles.
 
-Your portfolio displays all skills assigned to your profile. Each skill shows:
+Each skill entry can show:
 
-- **Skill name** with category tags (if a skill spans multiple categories)
-- **Proficiency level** (Novice, Intermediate, Proficient, Advanced, Expert)
-- **Interest level** — your willingness to use this skill on projects
-- **Endorsement count** — how many colleagues have vouched for your expertise
-- **Validation status** — whether your manager has confirmed this skill
+- Skill name
+- Category or category path
+- Current skill level
+- Interest level
+- Endorsement count
+- Manager review or dispute status
+- Stale assessment indicators when a skill has not been assessed recently
 
-### Editing Your Interest Level
+### Skill Levels
 
-You can update your interest level on any of your skills:
+Skills Hub uses the ServiceNow skill rating model configured for each skill. Each skill can have a level type, and the available levels come from the related `cmn_skill_level` records. This means the labels may vary based on the skill's rating scale instead of always using one global five-point label set.
 
-1. Find the skill in your portfolio
-2. Change the interest level dropdown to **High**, **Neutral**, or **Low**
-3. The change saves automatically
+When you update a skill level, choose the level that best reflects your current experience.
 
-This helps the organization understand not just what you *can* do, but what you *want* to do.
+### Interest Level
 
-### Adding a New Skill
+Interest level tells the organization whether you want to use or grow a skill. It is separate from proficiency.
 
-1. Click the **Add Skill** button on your portfolio
-2. Search for a skill in the skill picker
-3. Select which categories this skill applies to (checkboxes appear after selection)
-4. Click **Add Skill** to save
+Use interest to signal:
 
-If the skill you need doesn't exist in the catalog, click the **"Request it here"** link in the modal to submit a request for a new skill.
+- Skills you want to use more often
+- Skills you can support but do not want as a primary focus
+- Skills you are developing
 
-### Understanding Skill Grouping
+### Endorsements
 
-If you have the same skill in multiple categories (e.g., "Python" in both Technology and Analytics), Skills Hub groups them into a single row with category tags. Changing the proficiency on one automatically syncs to all instances.
+Endorsements show that colleagues recognize your experience with a skill. You can view endorsement details to see who endorsed a skill. Endorsement details include the endorser's name, role, and department when those values are available.
 
----
+You cannot endorse your own skills, and duplicate endorsements for the same person's skill are blocked.
 
-## Your Tier and Points
+### Manager Review Status
 
-Skills Hub uses a gamification system to encourage skill development and sharing.
+Managers can review skills for their direct reports. A skill may show:
 
-### How Points Are Earned
+| Status | Meaning |
+| --- | --- |
+| Pending | The skill has not yet been validated by a manager. |
+| Validated | The manager confirmed the skill assessment. |
+| Disputed | The manager suggested a different level or left review notes. |
+| Expired | The previous validation is stale and should be reviewed again. |
 
-| Activity | Points |
-|----------|--------|
-| Each skill on your profile | +10 |
-| Proficiency: Novice | +2 |
-| Proficiency: Intermediate | +5 |
-| Proficiency: Proficient | +10 |
-| Proficiency: Advanced | +20 |
-| Proficiency: Expert | +35 |
-| Each endorsement you receive | +5 |
-| Each endorsement you give to others | +3 |
-| Each manager-validated skill | +15 |
-| Each skill added this quarter | +8 |
+If a manager disputes a skill, review the suggested level and notes. The dispute is meant to close the loop through conversation, correction, or re-validation.
 
-### Tier Levels
+## Adding Skills
 
-| Tier | Points | Icon |
-|------|--------|------|
-| Starter | 0 – 49 | Seedling |
-| Contributor | 50 – 149 | Helping Hand |
-| Specialist | 150 – 299 | Star |
-| Trailblazer | 300 – 499 | Fire |
-| Luminary | 500+ | Sun |
+You can add skills in two ways.
 
-Your tier badge, total points, and progress bar toward the next tier are displayed at the top of your portfolio. Points recalculate each time you visit the page.
+### Add From My Skills
 
----
+1. Open **My Skills**.
+2. Select **Add Skill**.
+3. Search for the skill name.
+4. Select the skill.
+5. Choose the appropriate level and interest details.
+6. Save the skill to your profile.
 
-## Find an Expert
+The skill picker opens suggestions as you focus and type, similar to other ServiceNow lookup experiences.
 
-Use this tab to find colleagues with specific skills.
+### Add From Skill Library
 
-1. Go to the **Find an Expert** tab
-2. Type a skill name in the search field
-3. Results show matching users sorted by proficiency (highest first)
-4. Optionally filter by interest level to find people who *want* to use that skill
+1. Open **Skill Library**.
+2. Search or filter by category.
+3. Review the results table.
+4. Select **Add** next to the skill.
 
-### Endorsing a Colleague
+If a skill is already on your profile, the action shows **Added** and is disabled.
 
-When you find someone whose expertise you can vouch for:
+## Requesting a Missing Skill
 
-1. Click the **Endorse** button next to their skill
-2. The endorsement is recorded immediately
+If the skill you need does not exist, use the request flow.
 
-Rules:
-- You cannot endorse your own skills
-- You can only endorse the same person's skill once
-- Both you and the person you endorse earn points
+1. From the Add Skill experience, select **Request it here**, or open the **Request New Skill** catalog item.
+2. Enter the skill name.
+3. Select the best category.
+4. Provide a description that helps administrators understand the skill.
+5. Submit the request.
 
----
+The description should explain what the skill means in business terms. It is not a business justification for why you personally need it.
 
-## Leaderboard
+## Find Experts
 
-The Leaderboard ranks users by their total skill points within your department.
+Use Find Experts to locate colleagues with relevant skills.
 
-- Your row is highlighted so you can quickly find your rank
-- Toggle between **Team** and **Department** views
-- Rankings update each time you visit the page
+1. Open **Find Experts**.
+2. Search for a skill.
+3. Use filters such as department, business unit, group hierarchy, or interest level when available.
+4. Review each expert card for name, role, department, skill level, interest, and endorsement context.
 
----
+Use this view when staffing work, finding a peer reviewer, identifying a backup, or locating someone who has experience with a specific platform or process.
 
-## Requesting a New Skill
+## Skill Library
 
-If a skill you have isn't in the catalog:
+The Skill Library is the fastest way to browse and add skills.
 
-1. Go to the **Service Catalog**
-2. Find **"Request New Skill"** under the Skills Hub category
-3. Fill in:
-   - **Skill Name** (required)
-   - **Category** (required)
-   - **Justification** — why this skill should be added
-4. Submit the request
+The library supports:
 
-You'll receive email notifications when your request is submitted, approved, or rejected.
+- Keyword search
+- Category filtering
+- Pagination
+- Status badges showing whether a skill is already on your profile
+- Direct add actions
 
----
+The table is designed for scanning. Long descriptions are shortened in the table so the list remains usable.
 
-## Email Notifications You May Receive
+## Accessibility Notes
 
-| Notification | When |
-|-------------|------|
-| Skill Request Submitted | You submit a new skill request |
-| Skill Request Approved | Your request is approved (skill is now in the catalog) |
-| Skill Request Rejected | Your request was not approved (includes reason) |
-| Skill Validated by Manager | Your manager confirms one of your skills |
-| Skill Disputed by Manager | Your manager has a different assessment (includes their notes) |
-| You've Been Endorsed | A colleague endorses one of your skills |
-
----
+Skills Hub has been updated with accessibility improvements including descriptive button labels, keyboard focus styling, table captions, scoped table headers, and clearer status labels. This does not replace a formal 508 or ADA compliance review, but the portal experience is designed to support keyboard and screen reader use.
 
 ## FAQ
 
-**Q: Can I remove a skill from my profile?**
-A: Yes, use the remove option on the skill in your portfolio.
+**Why do some skill levels have different names?**
+Skill levels come from the rating scale assigned to the skill. Different skills may use different level labels.
 
-**Q: Why can't I see the Manager View tab?**
-A: This tab only appears if you have direct reports in ServiceNow.
+**Why is a skill marked Added in the Skill Library?**
+That skill is already on your profile.
 
-**Q: My skill shows as "Expired" — what does that mean?**
-A: Skills not validated by a manager in over 12 months are automatically flagged as expired. Ask your manager to re-validate.
+**What should I write in a new skill request description?**
+Describe what the skill is and how someone would recognize it. Do not write a personal justification.
 
-**Q: How do I increase my tier?**
-A: Add skills, increase proficiency levels, endorse colleagues, and get your skills validated by your manager.
+**What does Disputed mean?**
+Your manager suggested a different assessment or left notes. Use it as a prompt for follow-up and alignment.
 
-**Q: Can I endorse someone twice for the same skill?**
-A: No, each person can only endorse a specific skill once.
+**Can I remove a skill?**
+Yes, use the remove action on the skill in My Skills, if enabled for your role and record.

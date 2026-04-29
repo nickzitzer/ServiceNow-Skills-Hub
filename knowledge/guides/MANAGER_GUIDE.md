@@ -1,164 +1,108 @@
 # Skills Hub - Manager Guide
 
+**Audience:** Managers reviewing skills for direct reports.
+**Last updated:** 2026-04-29
+
 ## Overview
 
-As a manager, you have a critical role in Skills Hub: validating your team's self-assessed skills to ensure accuracy across the organization. You have access to all the features available to regular employees, plus the **Manager View** tab and validation capabilities.
+Managers use Skills Hub to review team skills, validate accurate assessments, and identify skills that need follow-up. The manager experience appears as the **Team Review** tab for users with direct reports in ServiceNow.
 
-Your role requires the **skill_manager** role in ServiceNow.
+Managers can still use the employee features: My Skills, Find Experts, and Skill Library.
 
----
+## Accessing Team Review
 
-## Accessing the Manager View
+1. Open Skills Hub:
 
-1. Navigate to **Skills Hub** in the left navigation, or go to `?id=skills_hub`
-2. Click the **Manager View** tab (visible only to users with direct reports)
+   ```text
+   /sp?id=skills_hub
+   ```
 
-The Manager Matrix displays all of your direct reports with their skills, proficiency levels, and validation status.
+2. Select **Team Review**.
 
----
+If the tab does not appear, confirm that the employee records have your user set in the `manager` field.
 
-## Understanding the Manager Matrix
+## Team Review Layout
 
-The matrix shows each direct report as a row with their skills displayed as cards. Each skill card shows:
+Team Review shows direct reports and their skills in a compact review matrix. The view is optimized for scanning status and taking action.
 
-| Field | Description |
-|-------|-------------|
-| **Skill Name** | The skill being assessed |
-| **Self-Assessment** | The employee's own proficiency rating |
-| **Manager Assessment** | Your independent proficiency rating (if set) |
-| **Endorsement Count** | Number of peer endorsements |
-| **Validation Status** | Pending, Validated, Disputed, or Expired |
+Each skill row or chip can include:
 
-Color coding highlights gaps between self-assessment and manager assessment.
+- Employee name
+- Skill name
+- Employee-assessed level
+- Manager-suggested level, when available
+- Validation status
+- Endorsement count
+- Last review date
+- Dispute or review notes
 
-### Filtering and Sorting
+## Filters
 
-- **Filter by validation status**: Show only Pending, Validated, Disputed, or Expired skills
-- **Sort by proficiency gap**: Identify the largest discrepancies between self and manager assessments
+Use the Team Review filters to focus the list.
 
----
+| Filter | Purpose |
+| --- | --- |
+| Reports | Show all direct report skill rows. |
+| Pending | Show skills waiting for manager review. |
+| Verified or Validated | Show skills already confirmed. |
+| Disputed | Show skills where a manager suggested a different level or left notes. |
+| Review | Show skills needing review attention, depending on the configured status count. |
+
+The filters should update the matrix without showing blank filler rows.
 
 ## Validating Skills
 
-Validation confirms that you agree with an employee's self-assessed proficiency level.
+Validate a skill when you agree with the employee's assessment.
 
-### Validate a Single Skill
+1. Find the employee and skill in Team Review.
+2. Open the skill review action.
+3. Confirm the level.
+4. Select **Validate**.
 
-1. Click on a skill in the Manager Matrix to open the validation modal
-2. Review the employee's self-assessed level
-3. Optionally set your own assessed level from the dropdown
-4. Click **Validate**
+Validation updates the skill record and stamps the latest manager validation timestamp.
 
-This action:
-- Sets the validation status to **Validated**
-- Records the current date/time as the validation date
-- Awards the employee +15 gamification points
-- Sends the employee an email notification
+## Disputing a Skill
 
-### Bulk Validate
+Dispute a skill when the employee assessment needs follow-up.
 
-To validate all pending skills for an employee at once:
+1. Open the skill review action.
+2. Select the manager-suggested level.
+3. Add review notes.
+4. Submit the dispute.
 
-1. Find the employee's row in the Manager Matrix
-2. Click the **Bulk Validate** button
-3. All non-validated skills are marked as Validated in a single operation
+The dispute state is stored on the employee skill record:
 
-Use this when you're confident in all of an employee's self-assessments.
+| Field | Purpose |
+| --- | --- |
+| `u_validation_status` | Stores the dispute or validation state. |
+| `u_validation_notes` | Stores manager notes and review context. |
+| `u_manager_assessed_level` | Stores the manager-suggested level. |
+| `u_last_manager_validation` | Stores the validation or review timestamp. |
 
----
+Disputes are not intended to be punitive. They are a way to close the loop when a skill level needs conversation or correction.
 
-## Disputing Skills
+## Reviewing Dispute Details
 
-If you disagree with an employee's self-assessed proficiency level:
-
-1. Click on the skill in the Manager Matrix
-2. Enter your own assessed level in the dropdown
-3. Enter notes explaining your assessment (required)
-4. Click **Dispute**
-
-This action:
-- Sets the validation status to **Disputed**
-- Records your assessed level separately from the employee's self-assessment
-- Saves your notes to the validation notes field
-- Sends the employee an email notification with your notes
-
-Disputing is not punitive — it's a signal that a conversation about skill development is needed.
-
----
-
-## Setting Manager Assessments
-
-You can set your independent proficiency assessment without changing the validation status:
-
-1. Click on a skill in the Manager Matrix
-2. Select your assessed level from the dropdown
-3. The assessment is saved alongside the employee's self-assessment
-
-This is useful when you want to record your perspective before having a conversation with the employee, or when tracking development over time.
-
----
-
-## Validation Lifecycle
-
-```
-Pending → Validated → Expired (after 12 months without re-validation)
-Pending → Disputed (manager disagrees)
-Expired → Validated (manager re-validates)
-Disputed → Validated (after discussion and re-validation)
-```
-
-### Automatic Expiration
-
-Skills that have been validated but not re-validated within 12 months are automatically set to **Expired** by a daily system job. This ensures skill data stays current. You will receive monthly email reminders listing employees with pending validations.
-
-### Monthly Reminders
-
-On the 1st of each month, if any of your direct reports have unvalidated skills, you will receive an email summary with:
-- The count of pending validations
-- A link to the Skills Hub Manager View
-
----
+Disputed skills show a compact status indicator. Select the status indicator to view the dispute details modal. The modal shows the employee, skill, status, suggested level, and notes.
 
 ## Best Practices
 
-### Regular Validation Cadence
-
-- **Monthly**: Review the validation reminder email and address any pending skills
-- **Quarterly**: Do a comprehensive review of your team's skill matrix during 1:1s
-- **On role change**: When an employee changes roles, review and update skill validations
-
-### Handling Disputes Constructively
-
-1. Always include clear, constructive notes when disputing
-2. Use disputes as a starting point for development conversations
-3. After discussing with the employee, re-validate the skill at the agreed level
-4. Consider creating a development plan for skills where there's a significant gap
-
-### Leveraging the Matrix for Team Planning
-
-- Use the matrix to identify **skill gaps** on your team
-- Look for skills with no coverage or single-person dependencies
-- Use the **interest level** column to identify employees eager to develop in specific areas
-- Cross-reference with **endorsement counts** to find your team's recognized experts
-
----
+- Review pending skills during regular one-on-ones.
+- Use dispute notes to explain the specific gap or evidence needed.
+- Re-validate after discussion when the level is aligned.
+- Use Find Experts to compare skills across the broader organization.
+- Use Skill Library to understand how skills are categorized before asking employees to add missing skills.
 
 ## FAQ
 
-**Q: Can I validate skills for someone who doesn't report directly to me?**
-A: No. Validation is restricted to your direct reports only (based on the manager field in ServiceNow).
+**Can I review users outside my direct reporting line?**
+No. Manager actions are restricted to direct reports, unless you have an administrator role.
 
-**Q: What happens when I bulk validate?**
-A: All skills with a non-validated status (Pending, Disputed, or Expired) are set to Validated with the current timestamp.
+**What happens when I dispute a skill?**
+The employee skill record is marked disputed and stores your suggested level and notes.
 
-**Q: An employee disagrees with my dispute — what do I do?**
-A: Have a conversation, align on the proficiency level, then validate the skill at the agreed level. The dispute history is preserved in the validation notes.
+**Can I change a disputed skill later?**
+Yes. After discussion, validate the skill at the agreed level or update the assessment as appropriate.
 
-**Q: I see "Expired" skills — is that bad?**
-A: Not necessarily. It means the skill hasn't been re-validated in over 12 months. Review and re-validate during your next 1:1.
-
-**Q: How does my validation affect the employee's gamification points?**
-A: Each validated skill adds +15 points to the employee's total. Disputed skills do not award points.
-
-**Q: Can I see skills for employees who don't report to me?**
-A: You can see any employee's skills through Find an Expert, but you can only validate/dispute skills for your direct reports.
+**Why do level names vary?**
+Skills use the level scale configured on the skill's `cmn_skill.level_type`, so labels may differ across skills.

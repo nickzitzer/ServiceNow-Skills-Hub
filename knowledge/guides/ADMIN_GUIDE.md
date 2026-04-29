@@ -1,259 +1,177 @@
 # Skills Hub - Administrator Guide
 
+**Audience:** Skills Hub administrators, ServiceNow administrators, and support teams.
+**Last updated:** 2026-04-29
+
 ## Overview
 
-This guide covers administration, configuration, and basic support for the Skills Hub application. Administrators manage the skill catalog, process skill requests, configure system behavior, and troubleshoot issues.
+Skills Hub is a ServiceNow Service Portal experience that extends the out-of-box skill tables with employee profiles, skill discovery, endorsements, manager review, skill requests, and a searchable Skill Library.
 
----
+Administrators are responsible for maintaining the skill library, supporting the request process, monitoring data quality, and troubleshooting portal behavior.
+
+## Key Tables
+
+| Table | Purpose |
+| --- | --- |
+| `cmn_skill` | Out-of-box skill library. Skills Hub uses this as the source of skills. |
+| `cmn_skill_category` | Out-of-box skill categories. |
+| `cmn_skill_level_type` | Out-of-box grouping for skill rating scales. |
+| `cmn_skill_level` | Out-of-box rating levels under a level type. |
+| `sys_user_has_skill` | Out-of-box user skill profile records. Extended with review fields. |
+| `u_m2m_skill_endorsement` | Peer endorsements for user skill records. |
+| `u_skill_request` | Requested skills submitted through the catalog flow. |
+| `u_skill_profile_requirement` | Optional role/profile skill requirements. |
+| `u_story_skill_assignment` | Optional demand and story skill tagging data. |
 
 ## Roles
 
-| Role | Scope | Capabilities |
-|------|-------|-------------|
-| **skill_user** | All authenticated users | View skills, create endorsements, edit own interest level |
-| **skill_manager** | Managers (inherits skill_user) | Validate/dispute team skills, set manager assessments, bulk validate |
-| **skill_admin** | Skills administrators | Approve/reject skill requests, manage catalog, manage category groups |
-| **admin** | Platform administrators | Full CRUD on all tables, system configuration |
+| Role | Typical audience | Capabilities |
+| --- | --- | --- |
+| `skill_user` | Employees | View and maintain own skills, use Find Experts, add skills, create endorsements. |
+| `skill_manager` | Managers | Review direct report skills when manager controls are enabled. |
+| `skill_admin` | Skill catalog owners | Review requested skills and maintain skill records. |
+| `admin` | Platform admins | Full platform administration and troubleshooting. |
 
-### Assigning Roles
+The Team Review tab appears based on direct reports in the `sys_user.manager` field. Role configuration may still be used for write access and administrative functions.
 
-1. Navigate to **User Administration > Users**
-2. Find the user record
-3. Go to the **Roles** related list
-4. Add the appropriate role (`skill_user`, `skill_manager`, or `skill_admin`)
+## Skill Library Administration
 
-Most users should receive `skill_user` automatically. `skill_manager` is for people with direct reports who need validation capabilities. `skill_admin` is for the team managing the skill catalog.
+Skills Hub uses `cmn_skill` as the library of available skills.
 
----
+### Creating or Updating Skills
 
-## Skill Catalog Management
+1. Navigate to `cmn_skill.list`.
+2. Create or open a skill record.
+3. Maintain the skill name and description.
+4. Set `active` appropriately, if available.
+5. Set `level_type` to the correct `cmn_skill_level_type`.
+6. Link the skill to categories through the available category relationship.
 
-### Managing Skills (cmn_skill)
+### Rating Scale Setup
 
-The skill catalog uses the out-of-box `cmn_skill` table. To add, edit, or deactivate skills:
+Each skill can reference a level type. The user interface reads child levels from `cmn_skill_level` and uses the numeric `value` field for scoring and ordering.
 
-1. Navigate to **Skills > Skills** (or search `cmn_skill.list`)
-2. Create, edit, or deactivate skill records as needed
+Verify:
 
-### Processing Skill Requests
+- `cmn_skill.level_type` is populated for skills that need a specific rating scale.
+- `cmn_skill_level.skill_level_type` or equivalent type reference points to the level type.
+- `cmn_skill_level.value` is populated consistently.
+- Level names and descriptions match the intended rating model.
 
-When employees request new skills via the catalog:
+## Skill Request Administration
 
-1. Navigate to **Skills Hub > u_skill_request.list** (or find pending requests)
-2. Review the request: skill name, category, justification
-3. Set the status to **Approved** or **Rejected**
-   - **Approved**: The system automatically creates the skill in `cmn_skill` and notifies the requester
-   - **Rejected**: Enter a rejection reason, then save. The requester is notified with your reason.
+Employees can request a missing skill through the Request New Skill catalog item.
 
-### Managing Category Groups
+The request form should collect:
 
-Category groups link related skills across different categories (e.g., "Data Science" spanning Technology and Analytics):
+- Skill name
+- Category
+- Description
 
-1. Navigate to `u_skill_category_group.list`
-2. Create a group with a name and description
-3. Navigate to `u_m2m_skill_category_group.list`
-4. Link skills and categories to the group
+The description should help administrators understand what the skill means. It should not be framed as a personal business justification.
 
----
+### Reviewing Requests
 
-## System Configuration
+1. Open the submitted request or related `u_skill_request` record.
+2. Check whether the requested skill already exists.
+3. Confirm the best category and naming convention.
+4. Create or update the `cmn_skill` record as appropriate.
+5. Communicate the outcome through the configured request process.
 
-### System Properties
+If approval workflow is not enabled in the target deployment, use the organization's standard request fulfillment process to close the loop.
 
-| Property | Default | Purpose |
-|----------|---------|---------|
-| `skills_hub.tier_config` | JSON object | Scoring weights and tier definitions |
-| `skills_hub.scoring_enabled` | `true` | Enable/disable gamification scoring |
+## Manager Review Administration
 
-### Modifying Tier Configuration
+Manager review state is stored on `sys_user_has_skill`.
 
-The tier system is configured via the `skills_hub.tier_config` system property. To modify:
+| Field | Purpose |
+| --- | --- |
+| `u_validation_status` | `pending`, `validated`, `disputed`, or `expired`. |
+| `u_validation_notes` | Manager dispute or review notes. |
+| `u_manager_assessed_level` | Manager-suggested level. |
+| `u_last_manager_validation` | Timestamp of latest manager validation or review. |
 
-1. Navigate to **System Properties > All Properties**
-2. Search for `skills_hub.tier_config`
-3. Edit the JSON value
+The Team Review UI depends on these fields for status filters, dispute indicators, and review modals.
 
-```json
-{
-  "scoring": {
-    "per_skill": 10,
-    "endorsement_received": 5,
-    "endorsement_given": 3,
-    "manager_validated": 15,
-    "skill_added_this_quarter": 8,
-    "proficiency_bonus": {
-      "novice": 2,
-      "intermediate": 5,
-      "proficient": 10,
-      "advanced": 20,
-      "expert": 35
-    }
-  },
-  "tiers": [
-    { "name": "Starter", "icon": "fa-seedling", "min": 0 },
-    { "name": "Contributor", "icon": "fa-hand-holding-heart", "min": 50 },
-    { "name": "Specialist", "icon": "fa-star", "min": 150 },
-    { "name": "Trailblazer", "icon": "fa-fire", "min": 300 },
-    { "name": "Luminary", "icon": "fa-sun", "min": 500 }
-  ]
-}
-```
+## Endorsement Administration
 
-Changes take effect immediately on next page load (no restart required).
+Endorsements are stored in `u_m2m_skill_endorsement`.
 
-### Skill Expiration Period
+Expected safeguards:
 
-The daily expiration job checks for skills not validated in over 12 months. To change this period, modify the scheduled job script:
+- Users cannot endorse their own skill.
+- Duplicate endorsements for the same skill record and endorser are blocked.
+- Endorsement counts are maintained on the related `sys_user_has_skill` record.
 
-1. Navigate to **System Scheduler > Scheduled Jobs**
-2. Find **"Skills Hub - Skill Expiration Check"**
-3. In the script, change the `gs.monthsAgo(12)` value
+If counts appear incorrect, recalculate from `u_m2m_skill_endorsement` for the affected skill record.
 
----
+## Portal Widgets
 
-## Scheduled Jobs
+| Widget ID | Purpose |
+| --- | --- |
+| `skills-hub-container` | Main tab container for Skills Hub. |
+| `skills-hub-profile` | My Skills profile management. |
+| `skills-hub-find` | Find Experts search and endorsement flow. |
+| `skills-hub-library` | Skill Library search, category filter, pagination, and add action. |
+| `skills-hub-matrix` | Team Review manager matrix. |
 
-| Job | Schedule | Purpose |
-|-----|----------|---------|
-| **Skills Hub - Skill Expiration Check** | Daily at 02:00 | Flags validated skills older than 12 months as "Expired" |
-| **Skills Hub - Monthly Validation Reminder** | 1st of each month at 08:00 | Emails managers with pending validation counts |
+## Accessibility and UX Administration
 
-### Monitoring Scheduled Jobs
+The current portal includes accessibility-oriented updates:
 
-1. Navigate to **System Scheduler > Scheduled Jobs**
-2. Search for "Skills Hub"
-3. Check the **Last run** and **Next run** fields
-4. Review **System Logs** for `[Skills Hub]` entries after each run
+- Descriptive button names for search, clear, add, and status actions.
+- Keyboard focus outlines on interactive controls.
+- Table captions and scoped column headers in Skill Library.
+- Visible labels for filters and lookup controls.
+- Compact table layouts for large skill lists.
 
----
+These updates support 508 and ADA readiness, but they do not replace a formal accessibility audit. Before production release, test with keyboard-only navigation and the organization's approved screen reader/browser combinations.
 
-## Email Notifications
+## Common Support Scenarios
 
-Seven notifications are configured:
+### Team Review tab does not show
 
-| Notification | Table | Trigger |
-|-------------|-------|---------|
-| Skill Request Submitted | `u_skill_request` | Insert (status = pending) |
-| Skill Request Approved | `u_skill_request` | Update (status changes to approved) |
-| Skill Request Rejected | `u_skill_request` | Update (status changes to rejected) |
-| Skill Validated by Manager | `sys_user_has_skill` | Update (validation_status changes to validated) |
-| Skill Disputed by Manager | `sys_user_has_skill` | Update (validation_status changes to disputed) |
-| Skill Endorsed | `u_m2m_skill_endorsement` | Insert |
-| Monthly Validation Reminder | Event-based | `skills_hub.validation_reminder` event |
+- Confirm the user has active direct reports.
+- Check the `manager` field on direct report `sys_user` records.
+- Confirm the portal page has the latest container widget version.
 
-To disable a notification: find it in **System Notification > Email > Notifications**, search by name, and set Active to false.
+### Skill levels show unexpected labels
 
----
+- Check the skill's `level_type`.
+- Check related `cmn_skill_level` records.
+- Confirm the `value` field is populated and ordered correctly.
 
-## Access Controls (ACLs)
+### Skill Library Add button says Added
 
-### Summary
+The current user already has a `sys_user_has_skill` record for that skill.
 
-| Table | Read | Create | Write | Delete |
-|-------|------|--------|-------|--------|
-| `u_m2m_skill_endorsement` | skill_user | skill_user (own endorser only) | skill_user | endorser or admin |
-| `sys_user_has_skill.u_interest_level` | — | — | record owner | — |
-| `sys_user_has_skill.u_manager_assessed_level` | — | — | employee's manager or admin | — |
-| `sys_user_has_skill.u_validation_status` | — | — | employee's manager or admin | — |
-| `sys_user_has_skill.u_validation_notes` | — | — | employee's manager or admin | — |
-| `u_skill_request` | skill_user | skill_user | skill_admin | admin |
-| `u_skill_profile_requirement` | skill_user | admin | admin | admin |
-| `u_skill_category_group` | — | skill_admin or admin | skill_admin or admin | skill_admin or admin |
+### Category picker or clear button layout looks wrong
 
-### Testing ACLs
+Confirm the toolbar repair script has been applied:
 
-After deployment, verify ACLs by testing with users in each role:
+- `82_repair_skill_library_toolbar_layout.js`
+- `83_verify_skill_library_toolbar_layout.js`
 
-1. **As skill_user**: Can read endorsements, create endorsements, edit own interest level, submit skill requests
-2. **As skill_manager**: Can validate/dispute direct reports' skills, set manager assessments
-3. **As skill_admin**: Can approve/reject skill requests, manage category groups
-4. **As admin**: Full access to all tables
+### Request form language is wrong
 
----
+Confirm the request cleanup scripts were applied and that the form uses "description" language instead of "business justification" language.
 
-## Troubleshooting
+### Manager filters do not match counts
 
-### Common Issues
+Confirm the manager filter repair scripts were applied:
 
-**Issue: Employee can't access Skills Hub portal page**
-- Verify the user has the `skill_user` role
-- Check the `sp_page` record for `skills_hub` exists and is not set to public=false without appropriate access
-- Verify the Service Portal is accessible
+- `74_repair_manager_review_filter.js`
+- `75_verify_manager_review_filter.js`
 
-**Issue: Manager View tab not showing**
-- The tab only appears if the user has active direct reports (manager field on `sys_user`)
-- Verify in User Administration that employees have the correct manager set
-- The `skill_manager` role is not required for the tab to appear — only direct reports
+## Verification Scripts
 
-**Issue: Endorsement count is wrong**
-- The count is maintained by business rules on `u_m2m_skill_endorsement`
-- To fix a miscount, run this background script:
-```javascript
-var gr = new GlideRecord('sys_user_has_skill');
-gr.addQuery('sys_id', '<skill_record_sys_id>');
-gr.query();
-if (gr.next()) {
-    var count = new GlideAggregate('u_m2m_skill_endorsement');
-    count.addQuery('u_skill_record', gr.getUniqueValue());
-    count.addAggregate('COUNT');
-    count.query();
-    var actual = 0;
-    if (count.next()) {
-        actual = parseInt(count.getAggregate('COUNT'));
-    }
-    gr.setValue('u_peer_endorsement_count', actual);
-    gr.update();
-    gs.info('Updated endorsement count to: ' + actual);
-}
-```
+Use the numbered verification scripts after applying implementation scripts. Recent stabilization scripts include:
 
-**Issue: Skill not syncing across categories**
-- The "Sync Cross-Category Skill Scores" business rule only fires when `skill_level` changes
-- Verify the business rule is active: **System Definition > Business Rules**, search for "Sync Cross-Category"
-- The sync matches by skill *name*, not sys_id
+| Scripts | Purpose |
+| --- | --- |
+| `66`-`73` | Profile search, category picker, and add-skill focus behavior. |
+| `74`-`75` | Team Review filter repair. |
+| `76`-`79` | Skill Library tab, verification, and table density polish. |
+| `80`-`83` | Skill Library UX/accessibility polish and toolbar layout repair. |
 
-**Issue: Notifications not sending**
-- Check **System Notification > Email > Notifications** — verify the notification is active
-- Check **System Logs > Email Log** for errors
-- For the monthly reminder, verify the event is registered: search `sysevent_register` for `skills_hub.validation_reminder`
-- Verify the notification is linked to the event via the `event_name` field
-
-**Issue: Gamification points seem wrong**
-- Points are calculated in real-time from current data — there is no cached score
-- Review the `skills_hub.tier_config` system property for correct scoring weights
-- Check if `skills_hub.scoring_enabled` is set to `true`
-
-**Issue: Records went to the wrong update set**
-- Query `sys_update_xml` to find misplaced records:
-```
-update_set=<wrong_set_id>^sys_created_onONToday@javascript:gs.beginningOfToday()@javascript:gs.endOfToday()
-```
-- Use `SN-Update-Record` on `sys_update_xml` to move records to the correct update set
-
-### Checking System Health
-
-Run the verification scripts to check deployment status:
-
-| Script | Phase | Purpose |
-|--------|-------|---------|
-| `09_verification.js` | Phase 1 | Tables, fields, choices, roles, BRs, ACLs |
-| `17_verification_phase2.js` | Phase 2 | Catalog, notifications, utils methods, widgets |
-| `26_verification_phase3.js` | Phase 3 | Tier system, leaderboard, navigation, grouping |
-| `33_verification_phase4.js` | Phase 4 | Demand tables, PA indicators, detection, gap analysis |
-
-These are read-only and safe to run at any time via Scripts - Background.
-
----
-
-## Update Set Management
-
-All Skills Hub artifacts are organized into four update sets:
-
-| Update Set | Contents |
-|------------|----------|
-| Skills Hub - Phase 1 - Foundation | Tables, fields, choices, roles, business rules, ACLs, seed data |
-| Skills Hub - Phase 2 - Process & Workflow | Catalog item, approval BRs, notifications, utils methods, widget patches, scheduled jobs |
-| Skills Hub - Phase 3 - UI Enhancements | Tier system, leaderboard widget, tab navigation, category modal, nav modules |
-| Skills Hub - Phase 4 - Analytics & Reporting | Demand table, PA indicators/dashboard, gap analysis widget, skill detection |
-
-When promoting to production, migrate update sets in order (Phase 1 first, then 2, 3, 4) to ensure dependencies are met.
+Verification scripts are designed to be read-only.
